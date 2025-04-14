@@ -141,7 +141,7 @@ This file tracks the development progress based on the phases outlined in `SEMAN
 *   `[x]` **6.3 Integrate `indexingStep` into Workflow:**
     *   `[x]` Add final step (`indexingStep`) to `semanticChunkingWorkflow.ts`, replacing `saveResultsStep`.
     *   `[x]` Ensure data flow (receives embeddings + metadata from `embeddingStep`).
-*   `[x]` **6.4 Test & Debug Integrated Step:**
-    *   `[ ]` Run full workflow (`pnpm tsx src/mastra/workflows/runSemanticChunking.ts`).
-    *   `[ ]` Verify data in vector DB using basic retrieval (requires separate query script/tool).
-    *   `[ ]` Debug any tool/workflow/DB issues. 
+*   `[ ]` **6.4 Test & Debug Integrated Step:**
+    *   `[x]` Run full workflow (`pnpm tsx src/mastra/workflows/runSemanticChunking.ts`).
+    *   `[x]` Verify data in vector DB using basic retrieval (requires separate query script/tool).
+    *   `[x]` Debug any tool/workflow/DB issues. 
