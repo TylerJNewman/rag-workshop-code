@@ -112,17 +112,17 @@ This file tracks the development progress based on the phases outlined in `SEMAN
 
 **Goal:** Convert text chunks to vector embeddings using OpenAI.
 
-*   `[ ]` **5.1 Create/Configure Embedding Utility/Tool:**
-    *   `[ ]` Confirm model: OpenAI `text-embedding-ada-002`.
-    *   `[ ]` Implement `embeddingTool` (e.g., in utils) handling API calls, keys, errors.
-*   `[ ]` **5.2 Integrate `embeddingStep(s)` into Workflow:**
-    *   `[ ]` Decide strategy (one step at end vs. multiple).
-    *   `[ ]` Add step(s) to `semanticChunkingWorkflow.ts`.
-    *   `[ ]` Collect required texts (fine, medium, large?).
-    *   `[ ]` Ensure data flow (receives texts, calls tool, outputs embeddings + metadata).
-*   `[ ]` **5.3 Test & Debug Integrated Step(s):**
+*   `[x]` **5.1 Create/Configure Embedding Utility/Tool:**
+    *   `[x]` Confirm model: OpenAI `text-embedding-3-large`.
+    *   `[x]` Implement `embeddingTool` (`generateEmbeddings` in `embeddingUtils.ts`) handling API calls, keys, errors.
+*   `[x]` **5.2 Integrate `embeddingStep(s)` into Workflow:**
+    *   `[x]` Decide strategy (one step at end vs. multiple). (Decided: One step after all chunking)
+    *   `[x]` Add step (`embeddingStep`) to `semanticChunkingWorkflow.ts`.
+    *   `[x]` Collect required texts (fine, medium, large).
+    *   `[x]` Ensure data flow (receives texts, calls tool, outputs embeddings + metadata).
+*   `[x]` **5.3 Test & Debug Integrated Step(s):**
     *   `[ ]` Run full workflow (`pnpm tsx src/mastra/workflows/runSemanticChunking.ts`).
-    *   `[ ]` Verify embedding format/dimensionality.
+    *   `[ ]` Verify embedding format/dimensionality (3072).
     *   `[ ]` Debug any tool/workflow issues.
     *   `[ ]` Monitor API usage/errors.
 
@@ -132,18 +132,16 @@ This file tracks the development progress based on the phases outlined in `SEMAN
 
 **Goal:** Store embeddings and metadata in vector DB (e.g., Pinecone).
 
-*   `[ ]` **6.1 Configure DB Client & Index:**
-    *   `[ ]` Choose DB (Confirm Pinecone?).
-    *   `[ ]` Set up client/env variables.
-    *   `[ ]` Define index schema/metadata fields.
-*   `[ ]` **6.2 Create/Configure Indexing Utility/Tool:**
-    *   `[ ]` Implement `indexingTool` (e.g., in utils) handling batching, upserts, errors.
-*   `[ ]` **6.3 Integrate `indexingStep` into Workflow:**
-    *   `[ ]` Add final step to `semanticChunkingWorkflow.ts`.
-    *   `[ ]` Ensure data flow (receives embeddings + metadata).
-*   `[ ]` **6.4 Test & Debug Integrated Step:**
+*   `[x]` **6.1 Configure DB Client & Index:**
+    *   `[x]` Choose DB (Confirmed PgVector).
+    *   `[x]` Set up client/env variables (`mastra.getVector('pg')`, requires `POSTGRES_CONNECTION_STRING`).
+    *   `[x]` Define index schema/metadata fields (`indexName: semantic-chunks`, dim: 3072, metadata: level, videoId, text, timestamps, etc.).
+*   `[x]` **6.2 Create/Configure Indexing Utility/Tool:**
+    *   `[x]` Implement `indexingTool` (`upsertEmbeddingsToPgVector` in `indexingUtils.ts`) handling batching, upserts, errors, index creation.
+*   `[x]` **6.3 Integrate `indexingStep` into Workflow:**
+    *   `[x]` Add final step (`indexingStep`) to `semanticChunkingWorkflow.ts`, replacing `saveResultsStep`.
+    *   `[x]` Ensure data flow (receives embeddings + metadata from `embeddingStep`).
+*   `[x]` **6.4 Test & Debug Integrated Step:**
     *   `[ ]` Run full workflow (`pnpm tsx src/mastra/workflows/runSemanticChunking.ts`).
-    *   `[ ]` Verify data in vector DB using basic retrieval.
-    *   `[ ]` Debug any tool/workflow/DB issues.
-
---- 
+    *   `[ ]` Verify data in vector DB using basic retrieval (requires separate query script/tool).
+    *   `[ ]` Debug any tool/workflow/DB issues. 

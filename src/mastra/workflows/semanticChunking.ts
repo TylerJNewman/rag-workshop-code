@@ -17,6 +17,10 @@ import { mediumChunkingTool, MediumChunk } from '../agents/med-chunking-agent/to
 import { mapFineChunksToTimestamps, TimedChunk } from './utils/timestampMapping';
 // Import the large chunking tool
 import { largeChunkingTool } from '../agents/large-chunking-agent/tool';
+// Import embedding utility and types
+import { generateEmbeddings, InputChunk, OutputChunk } from './utils/embeddingUtils';
+// Import indexing utility
+import { upsertEmbeddingsToPgVector } from './utils/indexingUtils';
 
 // Define Zod schemas for step outputs
 const videoDetailsSchema = z.custom<VideoDetails>();
@@ -32,6 +36,22 @@ const mediumChunksArraySchema = z.array(mediumChunkSchema);
 
 // Schema for the largeChunkingStep output
 const videoSummarySchema = z.string();
+
+// Schema for embedding output chunk
+const outputChunkSchema = z.custom<OutputChunk>(); // Assuming OutputChunk is { text, metadata, embedding }
+
+// Schema for the embeddingStep output
+const embeddingStepOutputSchema = z.object({
+    fineChunks: z.array(outputChunkSchema),
+    mediumChunks: z.array(outputChunkSchema),
+    largeChunk: outputChunkSchema.optional(), // Summary might be skipped
+});
+
+// Schema for the final indexing step output
+const indexingStepOutputSchema = z.object({
+    status: z.string(),
+    indexedCount: z.number(),
+});
 
 // Step 1: Fetch video details and raw transcript (Remains a Step object)
 export const fetchTranscriptStep = new Step({
@@ -181,63 +201,142 @@ export const largeChunkingStep = new Step({
     },
 });
 
-// Step 7: Save the medium chunks and summary (Adjusted Step 6)
-// TODO: Rename this step later (e.g., saveResultsStep)
-export const saveResultsStep = new Step({
-  id: 'saveResults', // Renamed ID
-  outputSchema: z.object({
-    status: z.string(),
-    chunksCount: z.number(),
-    summarySaved: z.boolean(),
-  }),
-  execute: async ({ context }) => {
-    const videoId = context.triggerData.videoId;
-    // Get results from previous steps
-    const mediumChunks = context.getStepResult<MediumChunk[]>('mediumChunking');
-    const videoSummary = context.getStepResult<string>('largeChunking');
+// Step 7: Generate Embeddings
+export const embeddingStep = new Step({
+    id: 'generateEmbeddings',
+    outputSchema: embeddingStepOutputSchema,
+    execute: async ({ context }) => {
+        console.log('--- Executing embeddingStep ---');
+        const videoId = context.triggerData.videoId;
 
-    let chunksCount = 0;
-    let chunksStatus = 'skipped';
-    let summarySaved = false;
+        // Get results from previous chunking steps
+        const timedFineChunks = context.getStepResult<TimedChunk[]>('timestampMapping') || [];
+        const mediumChunks = context.getStepResult<MediumChunk[]>('mediumChunking') || [];
+        const videoSummary = context.getStepResult<string>('largeChunking');
 
-    // Save Medium Chunks (if they exist)
-    if (mediumChunks && mediumChunks.length > 0) {
-        // Adapt the MediumChunk[] output to the SemanticChunk[] format
-        const semanticChunks: SemanticChunk[] = mediumChunks.map((chunk, index) => {
-           const startOffset = !Number.isNaN(chunk.startOffset) ? chunk.startOffset : 0;
-           const endOffset = !Number.isNaN(chunk.endOffset) ? chunk.endOffset : startOffset + 30; 
-           return {
-                chunkId: `${videoId}-medium-${index}`,
-                videoId: videoId,
+        const chunksToEmbed: InputChunk[] = [];
+
+        // Prepare fine chunks for embedding
+        for (const chunk of timedFineChunks) {
+            chunksToEmbed.push({
                 text: chunk.text,
-                startOffset: parseFloat(startOffset.toFixed(3)), 
-                endOffset: parseFloat(endOffset.toFixed(3)),
-                summary: chunk.summary, // Include summary in saved chunk data
-            };
-        });
-        const chunkFilenameSuffix = '_medium_chunks.json'; 
-        await writeChunksToFile(videoId, semanticChunks, chunkFilenameSuffix); 
-        chunksCount = semanticChunks.length;
-        chunksStatus = 'success';
-        console.log(`Successfully saved ${chunksCount} medium chunks for video ${videoId} to ./output/${videoId}${chunkFilenameSuffix}`);
-    } else {
-        console.warn('No medium chunks received from mediumChunking step. Nothing to save.');
-        chunksStatus = 'no_chunks';
-    }
+                metadata: {
+                    level: 'fine',
+                    videoId: videoId,
+                    startOffset: chunk.startOffset,
+                    endOffset: chunk.endOffset,
+                },
+            });
+        }
 
-    // Save Summary (if it exists)
-    if (videoSummary && videoSummary.trim().length > 0 && videoSummary !== "Summary skipped: No medium chunks provided.") {
-        const summaryFilenameSuffix = '_summary.txt';
-        await writeSummaryToFile(videoId, videoSummary, summaryFilenameSuffix);
-        summarySaved = true;
-        console.log(`Successfully saved video summary for video ${videoId} to ./output/${videoId}${summaryFilenameSuffix}`);
-    } else {
-        console.warn('No valid summary received from largeChunking step. Summary not saved.');
-    }
-    
-    console.log("saveResultsStep object defined:", !!saveResultsStep); // Use new step name
-    return { status: chunksStatus, chunksCount: chunksCount, summarySaved: summarySaved };
-  },
+        // Prepare medium chunks for embedding
+        for (const chunk of mediumChunks) {
+            // Ensure timestamps are numbers, default if necessary (though should be handled earlier ideally)
+            const startOffset = !Number.isNaN(chunk.startOffset) ? chunk.startOffset : 0;
+            const endOffset = !Number.isNaN(chunk.endOffset) ? chunk.endOffset : startOffset + 30; // Default duration if end is NaN
+            chunksToEmbed.push({
+                text: chunk.text, // Embed the main text of the medium chunk
+                metadata: {
+                    level: 'medium',
+                    videoId: videoId,
+                    startOffset: parseFloat(startOffset.toFixed(3)),
+                    endOffset: parseFloat(endOffset.toFixed(3)),
+                    summary: chunk.summary, // Keep summary in metadata
+                },
+            });
+        }
+
+        // Prepare video summary for embedding (if it exists and is valid)
+        let summaryChunk: InputChunk | null = null;
+        if (videoSummary && videoSummary.trim().length > 0 && videoSummary !== "Summary skipped: No medium chunks provided.") {
+            summaryChunk = {
+                text: videoSummary,
+                metadata: {
+                    level: 'large',
+                    videoId: videoId,
+                },
+            };
+            chunksToEmbed.push(summaryChunk);
+        }
+
+        if (chunksToEmbed.length === 0) {
+            console.warn('No text chunks found to generate embeddings for. Skipping embedding step.');
+            return { fineChunks: [], mediumChunks: [], largeChunk: undefined };
+        }
+
+        // Generate embeddings for all collected chunks
+        const chunksWithEmbeddings = await generateEmbeddings(chunksToEmbed);
+
+        // Separate the results back by level
+        const outputFineChunks: OutputChunk[] = [];
+        const outputMediumChunks: OutputChunk[] = [];
+        let outputLargeChunk: OutputChunk | undefined = undefined;
+
+        for (const chunk of chunksWithEmbeddings) {
+            switch (chunk.metadata.level) {
+                case 'fine':
+                    outputFineChunks.push(chunk);
+                    break;
+                case 'medium':
+                    outputMediumChunks.push(chunk);
+                    break;
+                case 'large':
+                    outputLargeChunk = chunk;
+                    break;
+            }
+        }
+
+        console.log(`embeddingStep returning ${outputFineChunks.length} fine, ${outputMediumChunks.length} medium chunks with embeddings, and ${outputLargeChunk ? '1 large chunk' : 'no large chunk'} with embedding.`);
+        return {
+            fineChunks: outputFineChunks,
+            mediumChunks: outputMediumChunks,
+            largeChunk: outputLargeChunk,
+        };
+    },
+});
+
+// Step 8: Index Embeddings (Replaces saveResultsStep)
+export const indexingStep = new Step({
+    id: 'indexEmbeddings',
+    outputSchema: indexingStepOutputSchema,
+    execute: async ({ context }) => {
+        console.log('--- Executing indexingStep ---');
+        const indexName = 'semantic-chunks'; // Define the target index name
+
+        // Get the results from the embedding step
+        const embeddingResults = context.getStepResult<z.infer<typeof embeddingStepOutputSchema>>('generateEmbeddings');
+
+        if (!embeddingResults) {
+            console.warn('No embedding results found. Skipping indexing.');
+            return { status: 'skipped_no_embeddings', indexedCount: 0 };
+        }
+
+        // Combine all chunks with embeddings into a single list
+        const allChunksToIndex: OutputChunk[] = [
+            ...embeddingResults.fineChunks,
+            ...embeddingResults.mediumChunks,
+        ];
+        if (embeddingResults.largeChunk) {
+            allChunksToIndex.push(embeddingResults.largeChunk);
+        }
+
+        if (allChunksToIndex.length === 0) {
+            console.warn('No valid chunks with embeddings to index. Skipping indexing.');
+            return { status: 'skipped_no_valid_chunks', indexedCount: 0 };
+        }
+
+        try {
+            await upsertEmbeddingsToPgVector(indexName, allChunksToIndex);
+            console.log(`Successfully completed indexing for ${allChunksToIndex.length} vectors.`);
+            return { status: 'success', indexedCount: allChunksToIndex.length };
+        } catch (error) {
+            console.error('Indexing step failed:', error);
+            // Propagate the error or return a failure status
+            // Returning a failure status for now
+             return { status: 'failed', indexedCount: 0 };
+             // Alternatively, could re-throw the error: throw error;
+        }
+    },
 });
 
 // Create and configure the workflow
@@ -246,15 +345,15 @@ export const semanticChunkingWorkflow = new Workflow({
   triggerSchema: z.object({
     videoId: z.string().min(1, "Video ID cannot be empty"),
   }),
+  // Define the sequence of steps
+  steps: [
+    fetchTranscriptStep,
+    formatTranscriptStep,
+    fineChunkingStep,
+    timestampMappingStep,
+    mediumChunkingStep,
+    largeChunkingStep,
+    embeddingStep,
+    indexingStep, // Replaced saveResultsStep with indexingStep
+  ],
 });
-
-// Link the steps sequentially, adding the new largeChunkingStep
-semanticChunkingWorkflow
-  .step(fetchTranscriptStep)
-  .then(formatTranscriptStep)
-  .then(fineChunkingStep)
-  .then(timestampMappingStep)
-  .then(mediumChunkingStep)
-  .then(largeChunkingStep) // Add the large chunking step here
-  .then(saveResultsStep)   // Use renamed save step
-  .commit();
