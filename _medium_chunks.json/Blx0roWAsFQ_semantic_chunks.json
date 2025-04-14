@@ -1,0 +1,9 @@
+[
+  {
+    "chunkId": "Blx0roWAsFQ-medium-0",
+    "videoId": "Blx0roWAsFQ",
+    "text": "So unfortunately it looks like Luc o which is the package I've been using for authentication in my little starter kit and some other projects is going to be deprecated early next year so what does that mean for you if you just started a project or if you cloned my starter kit it doesn't mean too much because getting off of Lucia is actually really easy so if you look at this early preview the plan is the maintainer is going to provide some nice documentation to walk you through how you can set up your off yourself and he has code Snippets that b basically map directly to if you're using drizzle like I am in my projects how you can basically write the functions as it was working inside of luo and this is something that I just did on my starter kit I went through this documentation I applied it to my starter kit uh basically it's just like two files I had to change and now everything's working as it did before but instead I'm not using Lucy anywhere if I search this whole project for Lucia doesn't come up because I've removed it so I'm going to walk you through like the overall way you can get off of it then also kind of like we should probably talk about open source.",
+    "startOffset": 0.16,
+    "endOffset": 68.799
+  }
+]

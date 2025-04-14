@@ -1,0 +1,1 @@
+export const instructions: string = String.raw`Given these sequential fine-level transcript chunks, group them into coherent topics or sections of approximately 500 words. Provide a short summary for each resulting medium-level chunk. Maintain timestamps.`;

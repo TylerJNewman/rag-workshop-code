@@ -1,0 +1,1 @@
+export const instructions: string = String.raw`Given the following medium-level summaries, generate a concise and informative overview (~1000 words) summarizing key topics, opinions, and factual points from the entire video.`
