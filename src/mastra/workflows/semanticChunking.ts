@@ -378,16 +378,16 @@ export const indexingStep = new Step({
 
         try {
             const indexName = 'semantic_chunks';
-            const dimension = 1536;
+            // const dimension = 1536;
 
-            console.log(`Deleting existing index '${indexName}' (if it exists)...`);
-            await pgVector.deleteIndex(indexName);
+            // console.log(`Deleting existing index '${indexName}' (if it exists)...`);
+            // await pgVector.deleteIndex(indexName);
 
-            console.log(`Creating new index '${indexName}' with dimension ${dimension}...`);
-            await pgVector.createIndex({
-                indexName: indexName,
-                dimension: dimension,
-            });
+            // console.log(`Creating new index '${indexName}' with dimension ${dimension}...`);
+            // await pgVector.createIndex({
+            //     indexName: indexName,
+            //     dimension: dimension,
+            // });
 
             console.log(`Attempting to upsert ${vectors.length} vectors to index '${indexName}'...`);
             await pgVector.upsert({

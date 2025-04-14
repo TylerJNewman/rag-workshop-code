@@ -21,10 +21,13 @@ const inputSchema = z.object({
 const agentChunkOutputSchema = z.object({
   content: z.string().describe("The full text content of the aggregated medium-level chunk."),
   summary: z.string().describe("A concise summary of the medium-level chunk."),
-  // Allow optional strings OR null for timestamps
-  chunk_id: z.number().optional(),
-  start_time: z.string().nullable().optional().describe("Optional start timestamp as string or null."),
-  end_time: z.string().nullable().optional().describe("Optional end timestamp as string or null."),
+  // Require the start and end *indices* of the fine chunks used
+  start_fine_chunk_index: z.number().int().min(0).describe("The 0-based index of the FIRST fine chunk included in this medium chunk."),
+  end_fine_chunk_index: z.number().int().min(0).describe("The 0-based index of the LAST fine chunk included in this medium chunk."),
+  // Remove old optional timestamp fields
+  // chunk_id: z.number().optional(),
+  // start_time: z.string().nullable().optional().describe("Optional start timestamp as string or null."),
+  // end_time: z.string().nullable().optional().describe("Optional end timestamp as string or null."),
 });
 // Define the schema for the agent's overall response (an array of medium chunks)
 const agentOutputSchema = z.array(agentChunkOutputSchema);
@@ -68,15 +71,20 @@ export const mediumChunkingTool = createTool({
              // Explicitly request JSON output conforming to the agentChunkOutputSchema
              `Aggregate the following fine-level chunks into coherent medium-level chunks. 
 Each medium chunk should represent a distinct topic or section.
+For each medium chunk, identify the start and end indices of the original fine-level chunks that were aggregated to create it.
+
 Return the result ONLY as a valid JSON array, where each object in the array MUST have the following fields:
 - "content": (string) The full text content of the aggregated medium-level chunk.
 - "summary": (string) A concise summary of the medium-level chunk.
-- "start_time": (string, optional) The start timestamp of the first fine chunk included.
-- "end_time": (string, optional) The end timestamp of the last fine chunk included.
+- "start_fine_chunk_index": (number) The 0-based index of the FIRST fine chunk included.
+- "end_fine_chunk_index": (number) The 0-based index of the LAST fine chunk included.
+
+IMPORTANT: Ensure the indices are correct, 0-based, and cover the range of fine chunks used for that medium chunk.
 
 Do NOT include any conversational text or markdown formatting (like \`\`\`) outside the JSON array itself.
 
-Here are the fine-level chunks, separated by '---':\\n\\n${concatenatedText}`
+Here are the original fine-level chunks (use their 0-based index for the start/end indices above):
+${context.fineChunks.map((chunk: TimedChunk, index: number) => `[${index}] ${chunk.text}`).join('\n\n---\n\n')}`
         );
         
         // 3. Parse Agent Response 
@@ -113,54 +121,53 @@ Here are the fine-level chunks, separated by '---':\\n\\n${concatenatedText}`
         // 4. Map agent output back to fine chunks and calculate timestamps
         const mediumChunks: z.infer<typeof outputSchema> = [];
 
-        // --- Heuristic Timestamp Mapping (Replaces Simplified Logic) ---
+        // --- Direct Timestamp Mapping using Agent-Provided Indices --- 
         const totalFineChunks = context.fineChunks.length;
         const totalAgentChunks = parsedAgentResponse.length;
+        let mappedCount = 0;
 
         if (totalFineChunks > 0 && totalAgentChunks > 0) {
-            let currentFineChunkIndex = 0;
             for (let i = 0; i < totalAgentChunks; i++) {
                 const agentChunk = parsedAgentResponse[i];
-                
-                // Estimate the range of fine chunks for this medium chunk
-                const fineChunksPerAgentChunk = Math.ceil(totalFineChunks / totalAgentChunks); // Simple division
-                const startFineChunkIndex = currentFineChunkIndex;
-                // Ensure end index doesn't exceed bounds, especially for the last agent chunk
-                let endFineChunkIndex = Math.min(currentFineChunkIndex + fineChunksPerAgentChunk - 1, totalFineChunks - 1);
+                const startIndex = agentChunk.start_fine_chunk_index;
+                const endIndex = agentChunk.end_fine_chunk_index;
 
-                // Basic check to prevent infinite loop if logic fails
-                if (startFineChunkIndex >= totalFineChunks || startFineChunkIndex > endFineChunkIndex) {
-                    console.warn(`[Heuristic Mapping] Skipping agent chunk ${i} due to index mismatch: start=${startFineChunkIndex}, end=${endFineChunkIndex}, total=${totalFineChunks}`);
-                    // Attempt to prevent getting stuck if distribution logic is flawed
-                    if(startFineChunkIndex >= totalFineChunks) break;
-                    endFineChunkIndex = startFineChunkIndex; // Process at least one if possible
+                // **Validation Checks**
+                if (startIndex === undefined || endIndex === undefined) {
+                     console.warn(`[Agent Mapping] Skipping agent chunk ${i} due to missing start/end index.`);
+                     continue;
+                }
+                if (startIndex < 0 || startIndex >= totalFineChunks || endIndex < 0 || endIndex >= totalFineChunks) {
+                    console.warn(`[Agent Mapping] Skipping agent chunk ${i} due to out-of-bounds index: start=${startIndex}, end=${endIndex}, total=${totalFineChunks}`);
+                    continue;
+                }
+                if (startIndex > endIndex) {
+                    console.warn(`[Agent Mapping] Skipping agent chunk ${i} due to start index (${startIndex}) > end index (${endIndex}).`);
+                    continue;
                 }
                 
-                const firstFineChunk = context.fineChunks[startFineChunkIndex];
-                const lastFineChunk = context.fineChunks[endFineChunkIndex];
+                // Indices are valid, proceed with mapping
+                const firstFineChunk = context.fineChunks[startIndex];
+                const lastFineChunk = context.fineChunks[endIndex];
 
                 mediumChunks.push({
-                    text: agentChunk.content, 
+                    text: agentChunk.content,
                     summary: agentChunk.summary,
-                    // Use start from the first fine chunk and end from the last fine chunk in the range
-                    startOffset: firstFineChunk.startOffset, 
-                    endOffset: lastFineChunk.endOffset,     
+                    startOffset: firstFineChunk.startOffset,
+                    endOffset: lastFineChunk.endOffset,
                 });
-                
-                // Move to the next fine chunk for the next iteration
-                currentFineChunkIndex = endFineChunkIndex + 1;
+                mappedCount++;
             }
-            console.log(`[Heuristic Mapping] Created ${mediumChunks.length} medium chunks.`);
-            
-            // Sanity check warning if counts don't match
-            if (mediumChunks.length !== totalAgentChunks) {
-                 console.warn(`[Heuristic Mapping] Mismatch: Agent returned ${totalAgentChunks}, mapped ${mediumChunks.length}`);
-            }
+            console.log(`[Agent Mapping] Created ${mappedCount} medium chunks using agent-provided indices.`);
 
+            // Sanity check warning if counts don't match expectations
+            if (mappedCount !== totalAgentChunks) {
+                console.warn(`[Agent Mapping] Mismatch: Agent returned ${totalAgentChunks}, mapped ${mappedCount} after validation.`);
+            }
         } else {
-            console.warn("[Heuristic Mapping] No agent response or no fine chunks to map.");
+            console.warn("[Agent Mapping] No agent response or no fine chunks to map.");
         }
-        // --- End Heuristic Timestamp Mapping ---
+        // --- End Direct Timestamp Mapping ---
 
         /* 
         // TODO: Implement robust mapping logic (potentially using Fuse.js) - Original Logic Commented Out
