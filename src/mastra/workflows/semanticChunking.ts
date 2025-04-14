@@ -21,6 +21,24 @@ import { largeChunkingTool } from '../agents/large-chunking-agent/tool';
 import { generateEmbeddings, InputChunk, OutputChunk } from './utils/embeddingUtils';
 // Import indexing utility
 import { upsertEmbeddingsToPgVector } from './utils/indexingUtils';
+import { mastra } from '../index';
+
+// Define a more specific type for the metadata used in this workflow
+type ChunkMetadata = {
+    videoId: string;
+    title?: string;
+    channelTitle?: string;
+    description?: string;
+    thumbnailUrl?: string;
+    publishedAt?: string | Date;
+    keywords?: string[];
+    lengthSeconds?: number;
+    viewCount?: number | string;
+    level: 'fine' | 'medium' | 'large';
+    startOffset?: number;
+    endOffset?: number;
+    summary?: string; // Added for medium chunks
+};
 
 // Define Zod schemas for step outputs
 const videoDetailsSchema = z.custom<VideoDetails>();
@@ -213,6 +231,27 @@ export const embeddingStep = new Step({
         const timedFineChunks = context.getStepResult<TimedChunk[]>('timestampMapping') || [];
         const mediumChunks = context.getStepResult<MediumChunk[]>('mediumChunking') || [];
         const videoSummary = context.getStepResult<string>('largeChunking');
+        // Get video details from the first step
+        const videoDetails = context.getStepResult<VideoDetails>('fetchTranscript');
+
+        if (!videoDetails) {
+            console.warn('Video details are missing from fetchTranscriptStep result. Some metadata will be omitted.');
+            // Decide if this is a fatal error or if we proceed with partial metadata
+            // For now, we proceed, but you might want to throw an error depending on requirements.
+        }
+
+        // Extract common metadata - handle potential missing videoDetails
+        const commonMetadata = {
+            videoId: videoId,
+            title: videoDetails?.title,
+            channelTitle: videoDetails?.channelTitle, // Corrected from author
+            description: videoDetails?.description, // Corrected from shortDescription
+            thumbnailUrl: videoDetails?.thumbnailUrl, // Corrected from thumbnail.url
+            publishedAt: videoDetails?.publishedAt, // Corrected from publishDate
+            keywords: videoDetails?.keywords,
+            lengthSeconds: videoDetails?.lengthSeconds,
+            viewCount: videoDetails?.viewCount,
+        };
 
         const chunksToEmbed: InputChunk[] = [];
 
@@ -221,8 +260,9 @@ export const embeddingStep = new Step({
             chunksToEmbed.push({
                 text: chunk.text,
                 metadata: {
+                    ...commonMetadata, // Spread common video metadata
                     level: 'fine',
-                    videoId: videoId,
+                    // videoId already in commonMetadata
                     startOffset: chunk.startOffset,
                     endOffset: chunk.endOffset,
                 },
@@ -237,8 +277,9 @@ export const embeddingStep = new Step({
             chunksToEmbed.push({
                 text: chunk.text, // Embed the main text of the medium chunk
                 metadata: {
+                    ...commonMetadata, // Spread common video metadata
                     level: 'medium',
-                    videoId: videoId,
+                    // videoId already in commonMetadata
                     startOffset: parseFloat(startOffset.toFixed(3)),
                     endOffset: parseFloat(endOffset.toFixed(3)),
                     summary: chunk.summary, // Keep summary in metadata
@@ -252,8 +293,9 @@ export const embeddingStep = new Step({
             summaryChunk = {
                 text: videoSummary,
                 metadata: {
+                    ...commonMetadata, // Spread common video metadata
                     level: 'large',
-                    videoId: videoId,
+                    // videoId already in commonMetadata
                 },
             };
             chunksToEmbed.push(summaryChunk);
@@ -264,77 +306,107 @@ export const embeddingStep = new Step({
             return { fineChunks: [], mediumChunks: [], largeChunk: undefined };
         }
 
-        // Generate embeddings for all collected chunks
-        const chunksWithEmbeddings = await generateEmbeddings(chunksToEmbed);
+        // Call the utility function
+        console.log(`Attempting to generate embeddings for ${chunksToEmbed.length} text chunks...`);
+        const outputChunks = await generateEmbeddings(chunksToEmbed);
+        console.log(`Embeddings generation finished. Received ${outputChunks.length} output chunks.`);
 
-        // Separate the results back by level
-        const outputFineChunks: OutputChunk[] = [];
-        const outputMediumChunks: OutputChunk[] = [];
-        let outputLargeChunk: OutputChunk | undefined = undefined;
+        // Separate the results
+        const fineOutputChunks = outputChunks.filter(c => c.metadata.level === 'fine');
+        const mediumOutputChunks = outputChunks.filter(c => c.metadata.level === 'medium');
+        let largeOutputChunk: OutputChunk | undefined = undefined;
 
-        for (const chunk of chunksWithEmbeddings) {
-            switch (chunk.metadata.level) {
-                case 'fine':
-                    outputFineChunks.push(chunk);
-                    break;
-                case 'medium':
-                    outputMediumChunks.push(chunk);
-                    break;
-                case 'large':
-                    outputLargeChunk = chunk;
-                    break;
+        for (const chunk of outputChunks) {
+            if (chunk.metadata.level === 'large') {
+                largeOutputChunk = chunk;
             }
         }
 
-        console.log(`embeddingStep returning ${outputFineChunks.length} fine, ${outputMediumChunks.length} medium chunks with embeddings, and ${outputLargeChunk ? '1 large chunk' : 'no large chunk'} with embedding.`);
+        console.log(`embeddingStep returning ${fineOutputChunks.length} fine, ${mediumOutputChunks.length} medium chunks with embeddings, and ${largeOutputChunk ? '1 large chunk' : 'no large chunk'} with embedding.`);
         return {
-            fineChunks: outputFineChunks,
-            mediumChunks: outputMediumChunks,
-            largeChunk: outputLargeChunk,
+            fineChunks: fineOutputChunks,
+            mediumChunks: mediumOutputChunks,
+            largeChunk: largeOutputChunk,
         };
     },
 });
 
-// Step 8: Index Embeddings (Replaces saveResultsStep)
+// Step 8: Index Embeddings
 export const indexingStep = new Step({
     id: 'indexEmbeddings',
     outputSchema: indexingStepOutputSchema,
     execute: async ({ context }) => {
         console.log('--- Executing indexingStep ---');
-        const indexName = 'semantic-chunks'; // Define the target index name
 
-        // Get the results from the embedding step
-        const embeddingResults = context.getStepResult<z.infer<typeof embeddingStepOutputSchema>>('generateEmbeddings');
-
-        if (!embeddingResults) {
-            console.warn('No embedding results found. Skipping indexing.');
-            return { status: 'skipped_no_embeddings', indexedCount: 0 };
+        const pgVector = mastra.getVector("pg");
+        if (!pgVector) {
+            console.error('pgVector instance not found in Mastra configuration.');
+            return { status: 'failed', indexedCount: 0 };
         }
 
-        // Combine all chunks with embeddings into a single list
-        const allChunksToIndex: OutputChunk[] = [
-            ...embeddingResults.fineChunks,
-            ...embeddingResults.mediumChunks,
-        ];
-        if (embeddingResults.largeChunk) {
-            allChunksToIndex.push(embeddingResults.largeChunk);
+        const embeddingsData = context.getStepResult<z.infer<typeof embeddingStepOutputSchema>>('generateEmbeddings');
+
+        if (!embeddingsData) {
+            console.warn('No embedding data received from embeddingStep. Skipping indexing.');
+            return { status: 'skipped', indexedCount: 0 };
+        }
+
+        const { fineChunks, mediumChunks, largeChunk } = embeddingsData;
+        const allChunksToIndex: OutputChunk[] = [...fineChunks, ...mediumChunks];
+        if (largeChunk) {
+            allChunksToIndex.push(largeChunk);
         }
 
         if (allChunksToIndex.length === 0) {
-            console.warn('No valid chunks with embeddings to index. Skipping indexing.');
-            return { status: 'skipped_no_valid_chunks', indexedCount: 0 };
+            console.log('No chunks with embeddings found to index.');
+            return { status: 'success', indexedCount: 0 };
+        }
+
+        const ids: string[] = [];
+        const vectors: number[][] = [];
+        // Use the specific ChunkMetadata type
+        const metadataArray: ChunkMetadata[] = [];
+
+        // Use for...of loop
+        for (const chunk of allChunksToIndex) {
+            const id = `${chunk.metadata.videoId}_${chunk.metadata.level}_${chunk.metadata.startOffset ?? 'summary'}`;
+            ids.push(id);
+            vectors.push(chunk.embedding);
+            // Cast metadata to the specific type (assuming it conforms)
+            metadataArray.push(chunk.metadata as ChunkMetadata);
         }
 
         try {
-            await upsertEmbeddingsToPgVector(indexName, allChunksToIndex);
-            console.log(`Successfully completed indexing for ${allChunksToIndex.length} vectors.`);
-            return { status: 'success', indexedCount: allChunksToIndex.length };
+            const indexName = 'semantic_chunks';
+            const dimension = 1536;
+
+            console.log(`Deleting existing index '${indexName}' (if it exists)...`);
+            await pgVector.deleteIndex(indexName);
+
+            console.log(`Creating new index '${indexName}' with dimension ${dimension}...`);
+            await pgVector.createIndex({
+                indexName: indexName,
+                dimension: dimension,
+            });
+
+            console.log(`Attempting to upsert ${vectors.length} vectors to index '${indexName}'...`);
+            await pgVector.upsert({
+                indexName: indexName,
+                vectors: vectors,
+                metadata: metadataArray,
+                ids: ids,
+            });
+            console.log(`Successfully upserted ${vectors.length} vectors to index ${indexName}`);
+            return {
+                status: 'success',
+                indexedCount: vectors.length,
+            };
         } catch (error) {
-            console.error('Indexing step failed:', error);
-            // Propagate the error or return a failure status
-            // Returning a failure status for now
-             return { status: 'failed', indexedCount: 0 };
-             // Alternatively, could re-throw the error: throw error;
+            console.error('Error during indexing:', error);
+            return {
+                status: 'failed',
+                indexedCount: 0,
+            };
         }
     },
 });
@@ -345,15 +417,15 @@ export const semanticChunkingWorkflow = new Workflow({
   triggerSchema: z.object({
     videoId: z.string().min(1, "Video ID cannot be empty"),
   }),
-  // Define the sequence of steps
-  steps: [
-    fetchTranscriptStep,
-    formatTranscriptStep,
-    fineChunkingStep,
-    timestampMappingStep,
-    mediumChunkingStep,
-    largeChunkingStep,
-    embeddingStep,
-    indexingStep, // Replaced saveResultsStep with indexingStep
-  ],
 });
+
+semanticChunkingWorkflow
+  .step(fetchTranscriptStep)
+  .then(formatTranscriptStep)
+  .then(fineChunkingStep)
+  .then(timestampMappingStep)
+  .then(mediumChunkingStep)
+  .then(largeChunkingStep)
+  .then(embeddingStep)
+  .then(indexingStep)
+  .commit();

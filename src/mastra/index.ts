@@ -1,4 +1,5 @@
 import { Mastra } from '@mastra/core/mastra';
+import { PostgresStore } from '@mastra/pg';
 
 import { queryVectorAgent, basicAgent } from "./agents";
 import { PgVector } from "@mastra/pg";
@@ -11,12 +12,17 @@ if (!connectionString) {
   );
 }
 const pgVector = new PgVector(connectionString);
+export { pgVector };
+
 export const mastra = new Mastra({
   agents: {
     queryVectorAgent,
     basicAgent,
     codeAgent,
   },
+  storage: new PostgresStore({
+    connectionString: connectionString
+  }),
   vectors: {
     pg: pgVector,
   },

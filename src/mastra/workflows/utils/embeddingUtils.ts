@@ -37,10 +37,10 @@ export async function generateEmbeddings(
 
   try {
     console.log(
-      `Generating embeddings for ${textsToEmbed.length} chunks using text-embedding-3-large...`
+      `Generating embeddings for ${textsToEmbed.length} chunks using text-embedding-3-small...`
     );
     const { embeddings } = await embedMany({
-      model: openai.embedding("text-embedding-3-large"),
+      model: openai.embedding("text-embedding-3-small"),
       values: textsToEmbed,
     });
 
