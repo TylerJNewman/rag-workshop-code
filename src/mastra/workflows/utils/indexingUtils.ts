@@ -18,8 +18,9 @@ const expectedMetadataSchema = z.object({
     thumbnailUrl: z.string().optional(),
     publishedAt: z.string().optional(),
     keywords: z.array(z.string()).optional(),
-    lengthSeconds: z.string().optional(),
+    lengthSeconds: z.number().optional(),
     viewCount: z.string().optional(),
+    tags: z.array(z.string()).optional(),
 }).passthrough(); // Allow other potential metadata fields
 
 /**

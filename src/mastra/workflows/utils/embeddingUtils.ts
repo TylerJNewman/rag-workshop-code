@@ -2,10 +2,65 @@ import { embedMany } from "ai";
 import { openai } from "@ai-sdk/openai";
 import { z } from "zod";
 
+// Base metadata structure, common to all chunk levels before embedding
+// Remove these manual types as they are derived from Zod below
+/*
+export type BaseChunkMetadata = {
+    videoId: string;
+    title?: string;
+    channelTitle?: string;
+    description?: string;
+    thumbnailUrl?: string;
+    publishedAt?: string | Date;
+    keywords?: string[]; // Original video keywords, distinct from generated tags
+    lengthSeconds?: number;
+    viewCount?: number | string;
+    level: 'fine' | 'medium' | 'large';
+    startOffset?: number;
+    endOffset?: number;
+    summary?: string; 
+    tags?: string[]; // <-- Add optional tags field
+};
+*/
+
+// Input structure for the embedding utility
+// Remove these manual types as they are derived from Zod below
+/*
+export type InputChunk = {
+    text: string; 
+    metadata: BaseChunkMetadata;
+};
+*/
+
+// Output structure from the embedding utility
+// Remove these manual types as they are derived from Zod below
+/*
+export type OutputChunk = {
+    text: string;
+    metadata: BaseChunkMetadata; // Metadata remains the same structure
+    embedding: number[];
+};
+*/
+
 // Define the input schema for a chunk with text and metadata
 const inputChunkSchema = z.object({
   text: z.string(),
-  metadata: z.record(z.any()), // Allow any metadata structure
+  metadata: z.object({ // Define expected metadata structure more explicitly
+      videoId: z.string(),
+      title: z.string().optional(),
+      channelTitle: z.string().optional(),
+      description: z.string().optional(),
+      thumbnailUrl: z.string().optional(),
+      publishedAt: z.union([z.string(), z.date()]).optional(),
+      keywords: z.array(z.string()).optional(), // Original video keywords
+      lengthSeconds: z.number().optional(),
+      viewCount: z.union([z.number(), z.string()]).optional(),
+      level: z.enum(['fine', 'medium', 'large']),
+      startOffset: z.number().optional(),
+      endOffset: z.number().optional(),
+      summary: z.string().optional(), 
+      tags: z.array(z.string()).optional(), // <-- Add optional tags field here
+  }).passthrough(), // Allow other fields if necessary, though explicit is better
 });
 
 // Define the output schema including the embedding

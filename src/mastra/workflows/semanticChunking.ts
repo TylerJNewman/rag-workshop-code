@@ -22,6 +22,8 @@ import { generateEmbeddings, InputChunk, OutputChunk } from './utils/embeddingUt
 // Import indexing utility
 import { upsertEmbeddingsToPgVector } from './utils/indexingUtils';
 import { mastra } from '../index';
+// Import the new tagging tool
+import { taggingTool } from '../agents/tagging-agent/tool';
 
 // Define a more specific type for the metadata used in this workflow
 type ChunkMetadata = {
@@ -221,112 +223,142 @@ export const largeChunkingStep = new Step({
 
 // Step 7: Generate Embeddings
 export const embeddingStep = new Step({
-    id: 'generateEmbeddings',
+    id: 'embeddingStep',
     outputSchema: embeddingStepOutputSchema,
     execute: async ({ context }) => {
         console.log('--- Executing embeddingStep ---');
-        const videoId = context.triggerData.videoId;
 
-        // Get results from previous chunking steps
-        const timedFineChunks = context.getStepResult<TimedChunk[]>('timestampMapping') || [];
-        const mediumChunks = context.getStepResult<MediumChunk[]>('mediumChunking') || [];
-        const videoSummary = context.getStepResult<string>('largeChunking');
-        // Get video details from the first step
+        // Retrieve results from previous steps
         const videoDetails = context.getStepResult<VideoDetails>('fetchTranscript');
+        const timedFineChunks = context.getStepResult<TimedChunk[]>('timestampMapping');
+        const mediumChunks = context.getStepResult<MediumChunk[]>('mediumChunking');
+        const videoSummary = context.getStepResult<string>('largeChunking');
 
-        if (!videoDetails) {
-            console.warn('Video details are missing from fetchTranscriptStep result. Some metadata will be omitted.');
-            // Decide if this is a fatal error or if we proceed with partial metadata
-            // For now, we proceed, but you might want to throw an error depending on requirements.
+        if (!videoDetails || !timedFineChunks || !mediumChunks) {
+            console.error('Missing required chunk data for embedding step.');
+            throw new Error('Required chunk data not found in context for embedding.');
         }
 
-        // Extract common metadata - handle potential missing videoDetails
-        const commonMetadata = {
-            videoId: videoId,
-            title: videoDetails?.title,
-            channelTitle: videoDetails?.channelTitle, // Corrected from author
-            description: videoDetails?.description, // Corrected from shortDescription
-            thumbnailUrl: videoDetails?.thumbnailUrl, // Corrected from thumbnail.url
-            publishedAt: videoDetails?.publishedAt, // Corrected from publishDate
-            keywords: videoDetails?.keywords,
-            lengthSeconds: videoDetails?.lengthSeconds,
-            viewCount: videoDetails?.viewCount,
-        };
-
+        // Attempt to parse lengthSeconds as a number
+        let lengthSecondsNum: number | undefined = undefined;
+        if (videoDetails.lengthSeconds) {
+            const parsed = parseInt(videoDetails.lengthSeconds, 10);
+            if (!Number.isNaN(parsed)) {
+                lengthSecondsNum = parsed;
+            } else {
+                 console.warn(`Could not parse lengthSeconds ("${videoDetails.lengthSeconds}") as number.`);
+            }
+        }
+        
         const chunksToEmbed: InputChunk[] = [];
 
-        // Prepare fine chunks for embedding
+        // Common metadata for all chunks from this video (using correct VideoDetails properties)
+        const commonMetadata = {
+            videoId: videoDetails.videoId,        
+            title: videoDetails.title,
+            channelTitle: videoDetails.channelTitle, 
+            description: videoDetails.description,    
+            thumbnailUrl: videoDetails.thumbnailUrl, 
+            publishedAt: videoDetails.publishedAt,    
+            keywords: videoDetails.keywords,
+            lengthSeconds: lengthSecondsNum, // Assign number | undefined directly
+            viewCount: videoDetails.viewCount, 
+        };
+
+        // Check if tagging tool execute exists before loops
+        if (!taggingTool.execute) {
+            throw new Error("Tagging tool execute function is not defined.");
+        }
+
+        // Prepare and tag fine chunks for embedding
+        console.log(`Preparing ${timedFineChunks.length} fine chunks for tagging and embedding...`);
         for (const chunk of timedFineChunks) {
+            let tags: string[] = [];
+            try {
+                tags = await taggingTool.execute({ context: chunk.text }); 
+            } catch (tagError) {
+                console.warn(`Failed to generate tags for fine chunk: ${tagError instanceof Error ? tagError.message : String(tagError)}. Proceeding without tags.`);
+            }
             chunksToEmbed.push({
                 text: chunk.text,
                 metadata: {
-                    ...commonMetadata, // Spread common video metadata
+                    ...commonMetadata, 
                     level: 'fine',
-                    // videoId already in commonMetadata
                     startOffset: chunk.startOffset,
                     endOffset: chunk.endOffset,
+                    tags: tags, 
                 },
             });
         }
 
-        // Prepare medium chunks for embedding
+        // Prepare and tag medium chunks for embedding
+        console.log(`Preparing ${mediumChunks.length} medium chunks for tagging and embedding...`);
         for (const chunk of mediumChunks) {
-            // Ensure timestamps are numbers, default if necessary (though should be handled earlier ideally)
+            let tags: string[] = [];
+            const textToTag = chunk.summary || chunk.text; 
+            try {
+                tags = await taggingTool.execute({ context: textToTag }); 
+            } catch (tagError) {
+                 console.warn(`Failed to generate tags for medium chunk (summary/text): ${tagError instanceof Error ? tagError.message : String(tagError)}. Proceeding without tags.`);
+            }
             const startOffset = !Number.isNaN(chunk.startOffset) ? chunk.startOffset : 0;
-            const endOffset = !Number.isNaN(chunk.endOffset) ? chunk.endOffset : startOffset + 30; // Default duration if end is NaN
+            const endOffset = !Number.isNaN(chunk.endOffset) ? chunk.endOffset : startOffset + 30; 
             chunksToEmbed.push({
-                text: chunk.text, // Embed the main text of the medium chunk
+                text: chunk.text, 
                 metadata: {
-                    ...commonMetadata, // Spread common video metadata
+                    ...commonMetadata, 
                     level: 'medium',
-                    // videoId already in commonMetadata
                     startOffset: parseFloat(startOffset.toFixed(3)),
                     endOffset: parseFloat(endOffset.toFixed(3)),
-                    summary: chunk.summary, // Keep summary in metadata
+                    summary: chunk.summary, 
+                    tags: tags, 
                 },
             });
         }
 
-        // Prepare video summary for embedding (if it exists and is valid)
-        let summaryChunk: InputChunk | null = null;
-        if (videoSummary && videoSummary.trim().length > 0 && videoSummary !== "Summary skipped: No medium chunks provided.") {
-            summaryChunk = {
+        // Prepare and tag video summary for embedding
+        let summaryChunkForEmbedding: InputChunk | null = null;
+        if (videoSummary && typeof videoSummary === 'string' && videoSummary.trim().length > 0) {
+            console.log("Preparing video summary for tagging and embedding...");
+            let tags: string[] = [];
+            try {
+                 tags = await taggingTool.execute({ context: videoSummary }); 
+            } catch (tagError) {
+                 console.warn(`Failed to generate tags for video summary: ${tagError instanceof Error ? tagError.message : String(tagError)}. Proceeding without tags.`);
+            }
+            summaryChunkForEmbedding = {
                 text: videoSummary,
                 metadata: {
-                    ...commonMetadata, // Spread common video metadata
+                    ...commonMetadata,
                     level: 'large',
-                    // videoId already in commonMetadata
+                    tags: tags, 
+                    startOffset: 0,
+                    endOffset: lengthSecondsNum, // Assign number | undefined directly
                 },
             };
-            chunksToEmbed.push(summaryChunk);
+            chunksToEmbed.push(summaryChunkForEmbedding);
+        } else {
+             // Use template literal for interpolation
+             console.log('Skipping video summary embedding (no summary found or invalid).'); 
         }
 
-        if (chunksToEmbed.length === 0) {
-            console.warn('No text chunks found to generate embeddings for. Skipping embedding step.');
-            return { fineChunks: [], mediumChunks: [], largeChunk: undefined };
-        }
+        // Use template literal for interpolation
+        console.log(`Attempting to generate embeddings for ${chunksToEmbed.length} text chunks...`); 
+        const embeddedChunks: OutputChunk[] = await generateEmbeddings(chunksToEmbed);
+        console.log('Embeddings generation finished.');
 
-        // Call the utility function
-        console.log(`Attempting to generate embeddings for ${chunksToEmbed.length} text chunks...`);
-        const outputChunks = await generateEmbeddings(chunksToEmbed);
-        console.log(`Embeddings generation finished. Received ${outputChunks.length} output chunks.`);
+        // Separate embedded chunks by level
+        const embeddedFineChunks = embeddedChunks.filter(c => c.metadata.level === 'fine');
+        const embeddedMediumChunks = embeddedChunks.filter(c => c.metadata.level === 'medium');
+        const embeddedLargeChunk = embeddedChunks.find(c => c.metadata.level === 'large');
 
-        // Separate the results
-        const fineOutputChunks = outputChunks.filter(c => c.metadata.level === 'fine');
-        const mediumOutputChunks = outputChunks.filter(c => c.metadata.level === 'medium');
-        let largeOutputChunk: OutputChunk | undefined = undefined;
+         console.log(`embeddingStep returning ${embeddedFineChunks.length} fine, ${embeddedMediumChunks.length} medium chunks with embeddings, and ${embeddedLargeChunk ? 1 : 0} large chunk with embedding.`);
 
-        for (const chunk of outputChunks) {
-            if (chunk.metadata.level === 'large') {
-                largeOutputChunk = chunk;
-            }
-        }
-
-        console.log(`embeddingStep returning ${fineOutputChunks.length} fine, ${mediumOutputChunks.length} medium chunks with embeddings, and ${largeOutputChunk ? '1 large chunk' : 'no large chunk'} with embedding.`);
-        return {
-            fineChunks: fineOutputChunks,
-            mediumChunks: mediumOutputChunks,
-            largeChunk: largeOutputChunk,
+         // Return adjusted structure matching schema
+         return {
+            fineChunks: embeddedFineChunks,
+            mediumChunks: embeddedMediumChunks,
+            largeChunk: embeddedLargeChunk, // Will be undefined if summary was skipped
         };
     },
 });
@@ -344,7 +376,7 @@ export const indexingStep = new Step({
             return { status: 'failed', indexedCount: 0 };
         }
 
-        const embeddingsData = context.getStepResult<z.infer<typeof embeddingStepOutputSchema>>('generateEmbeddings');
+        const embeddingsData = context.getStepResult<z.infer<typeof embeddingStepOutputSchema>>('embeddingStep');
 
         if (!embeddingsData) {
             console.warn('No embedding data received from embeddingStep. Skipping indexing.');
