@@ -61,20 +61,28 @@ This file tracks the development progress based on the phases outlined in `SEMAN
 
 **Goal:** Group fine-level chunks into medium-level sections using the existing `med-chunking-agent`.
 
-*   `[ ]` **3.1 Configure `MediumChunkingAgent`:**
-    *   `[ ]` Verify instructions in `src/mastra/agents/med-chunking-agent/instructions/instructions.ts` are correct (Fine -> Medium chunks with summary).
-    *   `[ ]` Verify agent name/ID/config in `index.ts`.
-*   `[ ]` **3.2 Configure `mediumChunkingTool`:**
-    *   `[ ]` Verify/update tool definition in `index.ts`.
-    *   `[ ]` Verify/update input schema (expects `Array<{ text: string, startOffset: number, endOffset: number }>` from Phase 2).
-    *   `[ ]` Verify/update output schema (e.g., `Array<{ text: string, summary: string, startOffset: number, endOffset: number }>`).
-    *   `[ ]` Verify/update `execute` logic to format input, call agent, parse output, calculate combined timestamps.
-*   `[ ]` **3.3 Integrate into Workflow:**
-    *   `[ ]` Create `mediumChunkingStep` in `semanticChunkingWorkflow.ts`.
-    *   `[ ]` Ensure it receives fine chunks and outputs medium chunks.
-*   `[ ]` **3.4 Testing:**
-    *   `[ ]` Test `MediumChunkingAgent/Tool` standalone.
-    *   `[ ]` Test `mediumChunkingStep` output format/content.
+*   `[x]` **3.1 Configure `MediumChunkingAgent`:**
+    *   `[x]` Verify/Update instructions in `src/mastra/agents/med-chunking-agent/instructions/instructions.ts` for desired output (Fine -> Medium chunks, summary, JSON format).
+    *   `[x]` Verify agent name/ID/config in `index.ts`.
+*   `[x]` **3.2 Configure `mediumChunkingTool`:**
+    *   `[x]` Verify/update tool definition in `index.ts`.
+    *   `[x]` Verify/update input schema (expects `TimedChunk[]`).
+    *   `[x]` Define/verify agent output schema (`agentChunkOutputSchema` allowing `null` timestamps).
+    *   `[x]` Define/verify final tool output schema (`outputSchema`).
+    *   `[x]` Implement/verify `execute` logic (prepare prompt, call agent, parse JSON, validate schema, handle errors).
+*   `[x]` **3.3 Integrate into Workflow:**
+    *   `[x]` Add `mediumChunkingStep` to `semanticChunkingWorkflow.ts`.
+    *   `[x]` Ensure it receives `TimedChunk[]` from `timestampMappingStep`.
+    *   `[x]` Ensure it calls `mediumChunkingTool`.
+*   `[x]` **3.4 Test & Debug Integrated Step:**
+    *   `[x]` Run full workflow (`pnpm tsx src/mastra/workflows/runSemanticChunking.ts`).
+    *   `[x]` Debug agent prompt for correct JSON output.
+    *   `[x]` Debug schema validation issues (`nullable` timestamps).
+    *   `[x]` Debug data flow issues (getting result from correct step).
+    *   `[x]` Verify step output format/content (medium chunks with text/summary/timestamps).
+*   `[/]` **3.5 Refine & Test Further:**
+    *   `[/]` Implement robust timestamp mapping logic within `mediumChunkingTool` (Implemented heuristic approach as a quick check). 
+    *   `[ ]` Run workflow and verify accuracy of medium chunk timestamps.
     *   `[ ]` Test medium chunk size consistency.
     *   `[ ]` Test summary quality.
 
@@ -84,64 +92,58 @@ This file tracks the development progress based on the phases outlined in `SEMAN
 
 **Goal:** Generate a video-level summary using the existing `large-chunking-agent`.
 
-*   `[ ]` **4.1 Configure `LargeChunkingAgent`:**
-    *   `[ ]` Verify instructions in `src/mastra/agents/large-chunking-agent/instructions/instructions.ts` are correct (Medium Summaries -> Video Summary).
-    *   `[ ]` Verify agent name/ID/config in `index.ts`.
-*   `[ ]` **4.2 Configure `largeChunkingTool`:**
-    *   `[ ]` Verify/update tool definition in `index.ts`.
-    *   `[ ]` Define input schema (expects `Array<{ text: string, summary: string, startOffset: number, endOffset: number }>` from Phase 3).
-    *   `[ ]` Define output schema (e.g., `z.string()`).
-    *   `[ ]` Implement/verify `execute` logic.
-*   `[ ]` **4.3 Integrate into Workflow:**
-    *   `[ ]` Create `largeChunkingStep` in `semanticChunkingWorkflow.ts`.
-*   `[ ]` **4.4 Testing:**
-    *   `[ ]` Test `LargeChunkingAgent/Tool` standalone.
-    *   `[ ]` Test `largeChunkingStep` output format/content.
-    *   `[ ]` Test summary quality and length.
+*   `[x]` **4.1 Configure `LargeChunkingAgent` & Tool:**
+    *   `[x]` Verify/Update agent instructions (`src/mastra/agents/large-chunking-agent/instructions/instructions.ts`) for Medium Summaries -> Video Summary.
+    *   `[x]` Verify/Update agent config (`index.ts`).
+    *   `[x]` Configure `largeChunkingTool` (input schema `MediumChunk[]`, output `z.string()`, execute logic).
+*   `[x]` **4.2 Integrate `largeChunkingStep` into Workflow:**
+    *   `[x]` Add step to `semanticChunkingWorkflow.ts` after `mediumChunkingStep`.
+    *   `[x]` Ensure data flow (receives `MediumChunk[]`, outputs `string`).
+*   `[x]` **4.3 Test & Debug Integrated Step:**
+    *   `[x]` Run full workflow (`pnpm tsx src/mastra/workflows/runSemanticChunking.ts`).
+    *   `[x]` Debug any agent/tool/workflow issues (Resolved tool signature errors).
+    *   `[x]` Modify `saveResultsStep` to save summary output.
+    *   `[x]` Verify summary output format/content in saved file.
+    *   `[x]` Test summary quality and length.
 
 ---
 
 ## Phase 5: Embedding Generation
 
-**Goal:** Convert text chunks to vector embeddings.
+**Goal:** Convert text chunks to vector embeddings using OpenAI.
 
-*   `[ ]` **5.1 Choose Embedding Model:** Confirm OpenAI `text-embedding-ada-002`.
-*   `[ ]` **5.2 Create Embedding Utility/Tool:**
-    *   `[ ]` Implement `embeddingTool` (e.g., in workflow utils or as a core tool).
-    *   `[ ]` Handle API keys, calls, rate limits, errors.
-*   `[ ]` **5.3 Integrate into Workflow:**
-    *   `[ ]` Decide on integration strategy (one step at end vs. multiple steps).
-    *   `[ ]` Add `embeddingStep(s)` to workflow.
-    *   `[ ]` Collect fine, medium, large chunk texts.
-    *   `[ ]` Call `embeddingTool`.
-    *   `[ ]` Ensure embeddings are passed forward with metadata.
-*   `[ ]` **5.4 Testing:**
-    *   `[ ]` Test `embeddingTool` standalone.
+*   `[ ]` **5.1 Create/Configure Embedding Utility/Tool:**
+    *   `[ ]` Confirm model: OpenAI `text-embedding-ada-002`.
+    *   `[ ]` Implement `embeddingTool` (e.g., in utils) handling API calls, keys, errors.
+*   `[ ]` **5.2 Integrate `embeddingStep(s)` into Workflow:**
+    *   `[ ]` Decide strategy (one step at end vs. multiple).
+    *   `[ ]` Add step(s) to `semanticChunkingWorkflow.ts`.
+    *   `[ ]` Collect required texts (fine, medium, large?).
+    *   `[ ]` Ensure data flow (receives texts, calls tool, outputs embeddings + metadata).
+*   `[ ]` **5.3 Test & Debug Integrated Step(s):**
+    *   `[ ]` Run full workflow (`pnpm tsx src/mastra/workflows/runSemanticChunking.ts`).
     *   `[ ]` Verify embedding format/dimensionality.
-    *   `[ ]` Monitor API usage.
+    *   `[ ]` Debug any tool/workflow issues.
+    *   `[ ]` Monitor API usage/errors.
 
 ---
 
 ## Phase 6: Indexing
 
-**Goal:** Store embeddings and metadata in vector DB.
+**Goal:** Store embeddings and metadata in vector DB (e.g., Pinecone).
 
-*   `[ ]` **6.1 Choose Vector Database:** (e.g., Pinecone).
-*   `[ ]` **6.2 Configure DB Client:**
-    *   `[ ]` Add necessary environment variables (.env).
-    *   `[ ]` Set up client initialization logic.
-*   `[ ]` **6.3 Define Index Schema:**
-    *   `[ ]` Finalize metadata fields (`video_id`, `level`, `start_time`, `end_time`, `text`, `summary` [for medium]).
-*   `[ ]` **6.4 Create Indexing Utility/Tool:**
-    *   `[ ]` Implement `indexingTool` (e.g., in workflow utils).
-    *   `[ ]` Handle batching, upserts, error handling.
-*   `[ ]` **6.5 Integrate into Workflow:**
-    *   `[ ]` Add final `indexingStep` to workflow.
-    *   `[ ]` Ensure it receives all embeddings and associated metadata.
-    *   `[ ]` Call `indexingTool`.
-*   `[ ]` **6.6 Testing:**
-    *   `[ ]` Test `indexingTool` standalone.
-    *   `[ ]` Verify data in vector DB.
-    *   `[ ]` Test basic retrieval.
+*   `[ ]` **6.1 Configure DB Client & Index:**
+    *   `[ ]` Choose DB (Confirm Pinecone?).
+    *   `[ ]` Set up client/env variables.
+    *   `[ ]` Define index schema/metadata fields.
+*   `[ ]` **6.2 Create/Configure Indexing Utility/Tool:**
+    *   `[ ]` Implement `indexingTool` (e.g., in utils) handling batching, upserts, errors.
+*   `[ ]` **6.3 Integrate `indexingStep` into Workflow:**
+    *   `[ ]` Add final step to `semanticChunkingWorkflow.ts`.
+    *   `[ ]` Ensure data flow (receives embeddings + metadata).
+*   `[ ]` **6.4 Test & Debug Integrated Step:**
+    *   `[ ]` Run full workflow (`pnpm tsx src/mastra/workflows/runSemanticChunking.ts`).
+    *   `[ ]` Verify data in vector DB using basic retrieval.
+    *   `[ ]` Debug any tool/workflow/DB issues.
 
 --- 

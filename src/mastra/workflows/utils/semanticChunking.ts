@@ -234,34 +234,49 @@ export function mapTimestampsToSemanticChunks(
  * @param chunks An array of SemanticChunk objects.
  * @param outputDir The directory to write the file to. Defaults to ./output
  */
-export async function writeChunksToFile(
-  videoId: string,
-  chunks: SemanticChunk[],
-  outputDir: string = DEFAULT_OUTPUT_DIR
-): Promise<void> {
-  if (chunks.length === 0) {
-    console.warn(`No chunks provided for video ${videoId}, skipping file write.`);
-    return;
-  }
-
-  try {
-    await fs.mkdir(outputDir, { recursive: true });
-    const filePath = path.join(outputDir, `${videoId}_semantic_chunks.json`);
-    // Sort chunks by startOffset before writing, as mapping might alter order slightly
-    chunks.sort((a, b) => a.startOffset - b.startOffset);
-    const fileContent = JSON.stringify(chunks, null, 2);
-
-    await fs.writeFile(filePath, fileContent, 'utf-8');
-    console.log(`Successfully wrote ${chunks.length} semantic chunks to ${filePath}`);
-  } catch (error: unknown) {
-    console.error(`Error writing semantic chunks to file for video ${videoId}:`, error);
-    // Fix linter error: Use template literal as interpolation is used
-    if (error instanceof Error) {
-        throw new Error(`Failed to write chunks file: ${error.message}`);
+export const writeChunksToFile = async (
+    videoId: string,
+    chunks: SemanticChunk[],
+    filenameSuffix = '_semantic_chunks.json'
+) => {
+    await ensureOutputDir();
+    const filename = `${videoId}${filenameSuffix}`;
+    const filepath = path.join(DEFAULT_OUTPUT_DIR, filename);
+    try {
+        await fs.writeFile(filepath, JSON.stringify(chunks, null, 2));
+        console.log(`Successfully wrote ${chunks.length} semantic chunks to ${filepath}`);
+    } catch (error) {
+        console.error(`Error writing chunks to file ${filepath}:`, error);
+        throw error; // Re-throw the error for the workflow to handle if necessary
     }
-     throw new Error("Failed to write chunks file: An unknown error occurred");
-  }
-}
+};
+
+// Ensure output directory exists
+const ensureOutputDir = async () => {
+    try {
+        await fs.access(DEFAULT_OUTPUT_DIR);
+    } catch (error) {
+        await fs.mkdir(DEFAULT_OUTPUT_DIR, { recursive: true });
+    }
+};
+
+// Function to write a summary string to a text file
+export const writeSummaryToFile = async (
+    videoId: string,
+    summary: string,
+    filenameSuffix = '_summary.txt'
+) => {
+    await ensureOutputDir();
+    const filename = `${videoId}${filenameSuffix}`;
+    const filepath = path.join(DEFAULT_OUTPUT_DIR, filename);
+    try {
+        await fs.writeFile(filepath, summary);
+        console.log(`Successfully wrote summary to ${filepath}`);
+    } catch (error) {
+        console.error(`Error writing summary to file ${filepath}:`, error);
+        throw error; // Re-throw the error for the workflow to handle if necessary
+    }
+};
 
 // Re-export needed types
 export type { TranscriptResponse, VideoDetails }; 

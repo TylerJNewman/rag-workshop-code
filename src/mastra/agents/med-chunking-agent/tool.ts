@@ -112,26 +112,56 @@ Here are the fine-level chunks, separated by '---':\\n\\n${concatenatedText}`
 
         // 4. Map agent output back to fine chunks and calculate timestamps
         const mediumChunks: z.infer<typeof outputSchema> = [];
-        // let currentFineChunkIndex = 0; // No longer needed for simplified logic
 
-        // --- Simplified Debugging Logic --- 
-        // Only process the first agent chunk and use the first fine chunk's timestamp
-        if (parsedAgentResponse.length > 0 && context.fineChunks.length > 0) {
-            const agentChunk = parsedAgentResponse[0];
-            const firstFineChunk = context.fineChunks[0];
-            // Use timestamp of the very first fine chunk for the first medium chunk
-            mediumChunks.push({
-                text: agentChunk.content, // Changed from medium_chunk_text to content
-                summary: agentChunk.summary,
-                startOffset: firstFineChunk.startOffset, 
-                endOffset: firstFineChunk.endOffset, // Use first chunk's end for simplicity    
-            });
-             console.log("Simplified mapping: Created 1 medium chunk using first fine chunk timestamp.");
+        // --- Heuristic Timestamp Mapping (Replaces Simplified Logic) ---
+        const totalFineChunks = context.fineChunks.length;
+        const totalAgentChunks = parsedAgentResponse.length;
+
+        if (totalFineChunks > 0 && totalAgentChunks > 0) {
+            let currentFineChunkIndex = 0;
+            for (let i = 0; i < totalAgentChunks; i++) {
+                const agentChunk = parsedAgentResponse[i];
+                
+                // Estimate the range of fine chunks for this medium chunk
+                const fineChunksPerAgentChunk = Math.ceil(totalFineChunks / totalAgentChunks); // Simple division
+                const startFineChunkIndex = currentFineChunkIndex;
+                // Ensure end index doesn't exceed bounds, especially for the last agent chunk
+                let endFineChunkIndex = Math.min(currentFineChunkIndex + fineChunksPerAgentChunk - 1, totalFineChunks - 1);
+
+                // Basic check to prevent infinite loop if logic fails
+                if (startFineChunkIndex >= totalFineChunks || startFineChunkIndex > endFineChunkIndex) {
+                    console.warn(`[Heuristic Mapping] Skipping agent chunk ${i} due to index mismatch: start=${startFineChunkIndex}, end=${endFineChunkIndex}, total=${totalFineChunks}`);
+                    // Attempt to prevent getting stuck if distribution logic is flawed
+                    if(startFineChunkIndex >= totalFineChunks) break;
+                    endFineChunkIndex = startFineChunkIndex; // Process at least one if possible
+                }
+                
+                const firstFineChunk = context.fineChunks[startFineChunkIndex];
+                const lastFineChunk = context.fineChunks[endFineChunkIndex];
+
+                mediumChunks.push({
+                    text: agentChunk.content, 
+                    summary: agentChunk.summary,
+                    // Use start from the first fine chunk and end from the last fine chunk in the range
+                    startOffset: firstFineChunk.startOffset, 
+                    endOffset: lastFineChunk.endOffset,     
+                });
+                
+                // Move to the next fine chunk for the next iteration
+                currentFineChunkIndex = endFineChunkIndex + 1;
+            }
+            console.log(`[Heuristic Mapping] Created ${mediumChunks.length} medium chunks.`);
+            
+            // Sanity check warning if counts don't match
+            if (mediumChunks.length !== totalAgentChunks) {
+                 console.warn(`[Heuristic Mapping] Mismatch: Agent returned ${totalAgentChunks}, mapped ${mediumChunks.length}`);
+            }
+
         } else {
-            console.warn("Simplified mapping: No agent response or no fine chunks to map.");
+            console.warn("[Heuristic Mapping] No agent response or no fine chunks to map.");
         }
-        // --- End Simplified Debugging Logic ---
-        
+        // --- End Heuristic Timestamp Mapping ---
+
         /* 
         // TODO: Implement robust mapping logic (potentially using Fuse.js) - Original Logic Commented Out
         for (const agentChunk of parsedAgentResponse) {

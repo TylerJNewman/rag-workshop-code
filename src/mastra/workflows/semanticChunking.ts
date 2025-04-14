@@ -9,11 +9,14 @@ import {
 import {
   writeChunksToFile,
   SemanticChunk,
+  writeSummaryToFile,
 } from './utils/semanticChunking';
 import { fineChunkingTool } from '../agents/fine-chunking-agent';
 // Import the medium chunking tool and its output type
 import { mediumChunkingTool, MediumChunk } from '../agents/med-chunking-agent/tool';
 import { mapFineChunksToTimestamps, TimedChunk } from './utils/timestampMapping';
+// Import the large chunking tool
+import { largeChunkingTool } from '../agents/large-chunking-agent/tool';
 
 // Define Zod schemas for step outputs
 const videoDetailsSchema = z.custom<VideoDetails>();
@@ -26,6 +29,9 @@ const timedChunksArraySchema = z.array(timedChunkSchema);
 // Schema for the mediumChunkingTool/Step output
 const mediumChunkSchema = z.custom<MediumChunk>();
 const mediumChunksArraySchema = z.array(mediumChunkSchema); 
+
+// Schema for the largeChunkingStep output
+const videoSummarySchema = z.string();
 
 // Step 1: Fetch video details and raw transcript (Remains a Step object)
 export const fetchTranscriptStep = new Step({
@@ -145,44 +151,92 @@ export const mediumChunkingStep = new Step({
     },
 });
 
-// Step 6: Save the medium chunks to a file (Now Step 5 again)
-export const saveChunksStep = new Step({
-  id: 'saveChunks',
+// Step 6: Perform Large Chunking (Video Summary)
+export const largeChunkingStep = new Step({
+    id: 'largeChunking',
+    outputSchema: videoSummarySchema,
+    execute: async ({ context }) => {
+        console.log('--- Executing largeChunkingStep ---');
+        // Get the medium chunks from the previous step
+        const mediumChunks = context.getStepResult<MediumChunk[]>('mediumChunking');
+
+        if (!mediumChunks || mediumChunks.length === 0) {
+            console.warn('No medium chunks received from mediumChunkingStep. Skipping large chunking.');
+            return "Summary skipped: No medium chunks provided.";
+        }
+
+        // Prepare the input for the largeChunkingTool
+        const toolInput = { mediumChunks: mediumChunks };
+
+        if (!largeChunkingTool.execute) {
+            throw new Error('Large chunking tool execute method is undefined');
+        }
+
+        // Call the tool's execute method
+        console.log("Calling largeChunkingTool.execute...");
+        const videoSummary = await largeChunkingTool.execute({ context: toolInput });
+
+        console.log(`largeChunkingStep returning summary of length ${videoSummary.length}.`);
+        return videoSummary;
+    },
+});
+
+// Step 7: Save the medium chunks and summary (Adjusted Step 6)
+// TODO: Rename this step later (e.g., saveResultsStep)
+export const saveResultsStep = new Step({
+  id: 'saveResults', // Renamed ID
   outputSchema: z.object({
     status: z.string(),
-    count: z.number(),
+    chunksCount: z.number(),
+    summarySaved: z.boolean(),
   }),
   execute: async ({ context }) => {
-    // Get the result from the mediumChunkingStep using its ID
-    const mediumChunks = context.getStepResult<MediumChunk[]>('mediumChunking');
     const videoId = context.triggerData.videoId;
+    // Get results from previous steps
+    const mediumChunks = context.getStepResult<MediumChunk[]>('mediumChunking');
+    const videoSummary = context.getStepResult<string>('largeChunking');
 
-    if (!mediumChunks || mediumChunks.length === 0) {
+    let chunksCount = 0;
+    let chunksStatus = 'skipped';
+    let summarySaved = false;
+
+    // Save Medium Chunks (if they exist)
+    if (mediumChunks && mediumChunks.length > 0) {
+        // Adapt the MediumChunk[] output to the SemanticChunk[] format
+        const semanticChunks: SemanticChunk[] = mediumChunks.map((chunk, index) => {
+           const startOffset = !Number.isNaN(chunk.startOffset) ? chunk.startOffset : 0;
+           const endOffset = !Number.isNaN(chunk.endOffset) ? chunk.endOffset : startOffset + 30; 
+           return {
+                chunkId: `${videoId}-medium-${index}`,
+                videoId: videoId,
+                text: chunk.text,
+                startOffset: parseFloat(startOffset.toFixed(3)), 
+                endOffset: parseFloat(endOffset.toFixed(3)),
+                summary: chunk.summary, // Include summary in saved chunk data
+            };
+        });
+        const chunkFilenameSuffix = '_medium_chunks.json'; 
+        await writeChunksToFile(videoId, semanticChunks, chunkFilenameSuffix); 
+        chunksCount = semanticChunks.length;
+        chunksStatus = 'success';
+        console.log(`Successfully saved ${chunksCount} medium chunks for video ${videoId} to ./output/${videoId}${chunkFilenameSuffix}`);
+    } else {
         console.warn('No medium chunks received from mediumChunking step. Nothing to save.');
-        return { status: 'no_chunks', count: 0 };
+        chunksStatus = 'no_chunks';
     }
 
-    // Adapt the MediumChunk[] output to the SemanticChunk[] format
-    const semanticChunks: SemanticChunk[] = mediumChunks.map((chunk, index) => {
-       const startOffset = !Number.isNaN(chunk.startOffset) ? chunk.startOffset : 0;
-       const endOffset = !Number.isNaN(chunk.endOffset) ? chunk.endOffset : startOffset + 30; 
-
-       return {
-            chunkId: `${videoId}-medium-${index}`,
-            videoId: videoId,
-            text: chunk.text,
-            startOffset: parseFloat(startOffset.toFixed(3)), 
-            endOffset: parseFloat(endOffset.toFixed(3)),
-            // summary: chunk.summary, 
-        };
-    });
-
-    const filenameSuffix = '_medium_chunks.json'; 
-    await writeChunksToFile(videoId, semanticChunks, filenameSuffix); 
+    // Save Summary (if it exists)
+    if (videoSummary && videoSummary.trim().length > 0 && videoSummary !== "Summary skipped: No medium chunks provided.") {
+        const summaryFilenameSuffix = '_summary.txt';
+        await writeSummaryToFile(videoId, videoSummary, summaryFilenameSuffix);
+        summarySaved = true;
+        console.log(`Successfully saved video summary for video ${videoId} to ./output/${videoId}${summaryFilenameSuffix}`);
+    } else {
+        console.warn('No valid summary received from largeChunking step. Summary not saved.');
+    }
     
-    console.log(`Successfully saved ${semanticChunks.length} medium chunks for video ${videoId} to ./output/${videoId}${filenameSuffix}`);
-    console.log("saveChunksStep object defined:", !!saveChunksStep); // <-- Log save step object creation
-    return { status: 'success', count: semanticChunks.length };
+    console.log("saveResultsStep object defined:", !!saveResultsStep); // Use new step name
+    return { status: chunksStatus, chunksCount: chunksCount, summarySaved: summarySaved };
   },
 });
 
@@ -194,12 +248,13 @@ export const semanticChunkingWorkflow = new Workflow({
   }),
 });
 
-// Link the steps sequentially, using the explicit Step wrapper again
+// Link the steps sequentially, adding the new largeChunkingStep
 semanticChunkingWorkflow
   .step(fetchTranscriptStep)
   .then(formatTranscriptStep)
   .then(fineChunkingStep)
   .then(timestampMappingStep)
-  .then(mediumChunkingStep) // Use the Step object here
-  .then(saveChunksStep)
+  .then(mediumChunkingStep)
+  .then(largeChunkingStep) // Add the large chunking step here
+  .then(saveResultsStep)   // Use renamed save step
   .commit();
