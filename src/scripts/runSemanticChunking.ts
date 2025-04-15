@@ -1,4 +1,4 @@
-import { semanticChunkingWorkflow } from "../mastra/workflows/semanticChunking";
+import { semanticChunkingWorkflow } from "../mastra/workflows/semanticChunkingWorkflow";
 
 // Run the workflow
 const videoId = 'Blx0roWAsFQ';

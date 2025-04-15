@@ -1,11 +1,9 @@
 import { Agent } from '@mastra/core';
 import { taggingAgentInstructions } from './instructions/instructions';
-import { mastra } from '../../index'; // Assuming mastra is initialized here
 import { google } from '@ai-sdk/google'; // Import the provider
 import { env } from '../../../config'; // Assuming GEMINI_MODEL is defined here
 
 export const taggingAgent = new Agent({
-    mastra: mastra,
     name: 'Tagging Agent',
     instructions: taggingAgentInstructions,
     // Use the standard GEMINI_MODEL env var, fallback to flash

@@ -6,11 +6,6 @@ import {
   formatTranscript,
   VideoDetails,
 } from './utils/fetchTranscript';
-import {
-  writeChunksToFile,
-  SemanticChunk,
-  writeSummaryToFile,
-} from './utils/semanticChunking';
 import { fineChunkingTool } from '../agents/fine-chunking-agent';
 // Import the medium chunking tool and its output type
 import { mediumChunkingTool, MediumChunk } from '../agents/med-chunking-agent/tool';
@@ -19,9 +14,7 @@ import { mapFineChunksToTimestamps, TimedChunk } from './utils/timestampMapping'
 import { largeChunkingTool } from '../agents/large-chunking-agent/tool';
 // Import embedding utility and types
 import { generateEmbeddings, InputChunk, OutputChunk } from './utils/embeddingUtils';
-// Import indexing utility
-import { upsertEmbeddingsToPgVector } from './utils/indexingUtils';
-import { mastra } from '../index';
+
 // Import the new tagging tool
 import { taggingTool } from '../agents/tagging-agent/tool';
 
@@ -367,8 +360,13 @@ export const embeddingStep = new Step({
 export const indexingStep = new Step({
     id: 'indexEmbeddings',
     outputSchema: indexingStepOutputSchema,
-    execute: async ({ context }) => {
+    execute: async ({ context, mastra }) => {
         console.log('--- Executing indexingStep ---');
+
+        if (!mastra) {
+            console.error('Mastra instance not found in context.');
+            return { status: 'failed', indexedCount: 0 };
+        }
 
         const pgVector = mastra.getVector("pg");
         if (!pgVector) {

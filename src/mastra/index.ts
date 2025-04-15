@@ -4,6 +4,7 @@ import { PostgresStore } from '@mastra/pg';
 import { queryVectorAgent, basicAgent } from "./agents";
 import { PgVector } from "@mastra/pg";
 import { codeAgent } from "../bonus/agent";
+import { semanticChunkingWorkflow } from './workflows/semanticChunkingWorkflow';
 
 const connectionString = process.env.POSTGRES_CONNECTION_STRING;
 if (!connectionString) {
@@ -19,6 +20,9 @@ export const mastra = new Mastra({
     queryVectorAgent,
     basicAgent,
     codeAgent,
+  },
+  workflows: {
+    semanticChunkingWorkflow,
   },
   storage: new PostgresStore({
     connectionString: connectionString
