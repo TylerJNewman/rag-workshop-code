@@ -1,0 +1,2580 @@
+{
+  "videoId": "Blx0roWAsFQ",
+  "title": "Lucia Auth is Getting Deprecated",
+  "channelTitle": "Web Dev Cody",
+  "description": "Become a YT Members to get extra perks!\nhttps://www.youtube.com/@webdevcody/join\n\nMy Products\n🎥 Video Crafter: https://thevideocrafter.com/?utm=wdc\n💀 Scary Story Generator: https://scarystorygenerator.com/?utm=wdc\n🏗️ WDC StarterKit: https://wdcstarterkit.com\n📖 ProjectPlannerAI: https://projectplannerai.com\n🤖 IconGeneratorAI: https://icongeneratorai.com\n\nUseful Links\n💬 Discord: https://discord.gg/4kGbBaa\n🔔 Newsletter: https://newsletter.webdevcody.com/\n📁 GitHub: https://github.com/webdevcody\n📺 Twitch: https://www.twitch.tv/webdevcody\n🤖 Website: https://webdevcody.com\n🐦 Twitter: https://twitter.com/webdevcody",
+  "thumbnailUrl": "https://i.ytimg.com/vi/Blx0roWAsFQ/maxresdefault.jpg?sqp=-oaymwEmCIAKENAF8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGGUgTChLMA8=&rs=AOn4CLB40Nde1kOAOExxcmzBo5c-GlA08g",
+  "publishedAt": "2024-10-13T07:36:57-07:00",
+  "keywords": [
+    "web development",
+    "programming",
+    "coding",
+    "code",
+    "learn to code",
+    "tutorial",
+    "software engineering"
+  ],
+  "lengthSeconds": "553",
+  "viewCount": "15946",
+  "captionsData": {
+    "playerCaptionsTracklistRenderer": {
+      "captionTracks": [
+        {
+          "baseUrl": "https://www.youtube.com/api/timedtext?v=Blx0roWAsFQ&ei=NkEEaJqPNomIzN0P7c-PgA8&caps=asr&opi=112496729&xoaf=5&hl=en&ip=0.0.0.0&ipbits=0&expire=1745134502&sparams=ip,ipbits,expire,v,ei,caps,opi,xoaf&signature=57330B232C31405EE70A99DC6AE3129C2FA2B8BC.A38F37CBA0362E38DE572410D1A61EBC7FA84654&key=yt8&kind=asr&lang=en",
+          "name": {
+            "simpleText": "English (auto-generated)"
+          },
+          "vssId": "a.en",
+          "languageCode": "en",
+          "kind": "asr",
+          "isTranslatable": true,
+          "trackName": ""
+        }
+      ],
+      "audioTracks": [
+        {
+          "captionTrackIndices": [
+            0
+          ]
+        }
+      ],
+      "translationLanguages": [
+        {
+          "languageCode": "ab",
+          "languageName": {
+            "simpleText": "Abkhazian"
+          }
+        },
+        {
+          "languageCode": "aa",
+          "languageName": {
+            "simpleText": "Afar"
+          }
+        },
+        {
+          "languageCode": "af",
+          "languageName": {
+            "simpleText": "Afrikaans"
+          }
+        },
+        {
+          "languageCode": "ak",
+          "languageName": {
+            "simpleText": "Akan"
+          }
+        },
+        {
+          "languageCode": "sq",
+          "languageName": {
+            "simpleText": "Albanian"
+          }
+        },
+        {
+          "languageCode": "am",
+          "languageName": {
+            "simpleText": "Amharic"
+          }
+        },
+        {
+          "languageCode": "ar",
+          "languageName": {
+            "simpleText": "Arabic"
+          }
+        },
+        {
+          "languageCode": "hy",
+          "languageName": {
+            "simpleText": "Armenian"
+          }
+        },
+        {
+          "languageCode": "as",
+          "languageName": {
+            "simpleText": "Assamese"
+          }
+        },
+        {
+          "languageCode": "ay",
+          "languageName": {
+            "simpleText": "Aymara"
+          }
+        },
+        {
+          "languageCode": "az",
+          "languageName": {
+            "simpleText": "Azerbaijani"
+          }
+        },
+        {
+          "languageCode": "bn",
+          "languageName": {
+            "simpleText": "Bangla"
+          }
+        },
+        {
+          "languageCode": "ba",
+          "languageName": {
+            "simpleText": "Bashkir"
+          }
+        },
+        {
+          "languageCode": "eu",
+          "languageName": {
+            "simpleText": "Basque"
+          }
+        },
+        {
+          "languageCode": "be",
+          "languageName": {
+            "simpleText": "Belarusian"
+          }
+        },
+        {
+          "languageCode": "bho",
+          "languageName": {
+            "simpleText": "Bhojpuri"
+          }
+        },
+        {
+          "languageCode": "bs",
+          "languageName": {
+            "simpleText": "Bosnian"
+          }
+        },
+        {
+          "languageCode": "br",
+          "languageName": {
+            "simpleText": "Breton"
+          }
+        },
+        {
+          "languageCode": "bg",
+          "languageName": {
+            "simpleText": "Bulgarian"
+          }
+        },
+        {
+          "languageCode": "my",
+          "languageName": {
+            "simpleText": "Burmese"
+          }
+        },
+        {
+          "languageCode": "ca",
+          "languageName": {
+            "simpleText": "Catalan"
+          }
+        },
+        {
+          "languageCode": "ceb",
+          "languageName": {
+            "simpleText": "Cebuano"
+          }
+        },
+        {
+          "languageCode": "zh-Hans",
+          "languageName": {
+            "simpleText": "Chinese (Simplified)"
+          }
+        },
+        {
+          "languageCode": "zh-Hant",
+          "languageName": {
+            "simpleText": "Chinese (Traditional)"
+          }
+        },
+        {
+          "languageCode": "co",
+          "languageName": {
+            "simpleText": "Corsican"
+          }
+        },
+        {
+          "languageCode": "hr",
+          "languageName": {
+            "simpleText": "Croatian"
+          }
+        },
+        {
+          "languageCode": "cs",
+          "languageName": {
+            "simpleText": "Czech"
+          }
+        },
+        {
+          "languageCode": "da",
+          "languageName": {
+            "simpleText": "Danish"
+          }
+        },
+        {
+          "languageCode": "dv",
+          "languageName": {
+            "simpleText": "Divehi"
+          }
+        },
+        {
+          "languageCode": "nl",
+          "languageName": {
+            "simpleText": "Dutch"
+          }
+        },
+        {
+          "languageCode": "dz",
+          "languageName": {
+            "simpleText": "Dzongkha"
+          }
+        },
+        {
+          "languageCode": "en",
+          "languageName": {
+            "simpleText": "English"
+          }
+        },
+        {
+          "languageCode": "eo",
+          "languageName": {
+            "simpleText": "Esperanto"
+          }
+        },
+        {
+          "languageCode": "et",
+          "languageName": {
+            "simpleText": "Estonian"
+          }
+        },
+        {
+          "languageCode": "ee",
+          "languageName": {
+            "simpleText": "Ewe"
+          }
+        },
+        {
+          "languageCode": "fo",
+          "languageName": {
+            "simpleText": "Faroese"
+          }
+        },
+        {
+          "languageCode": "fj",
+          "languageName": {
+            "simpleText": "Fijian"
+          }
+        },
+        {
+          "languageCode": "fil",
+          "languageName": {
+            "simpleText": "Filipino"
+          }
+        },
+        {
+          "languageCode": "fi",
+          "languageName": {
+            "simpleText": "Finnish"
+          }
+        },
+        {
+          "languageCode": "fr",
+          "languageName": {
+            "simpleText": "French"
+          }
+        },
+        {
+          "languageCode": "gaa",
+          "languageName": {
+            "simpleText": "Ga"
+          }
+        },
+        {
+          "languageCode": "gl",
+          "languageName": {
+            "simpleText": "Galician"
+          }
+        },
+        {
+          "languageCode": "lg",
+          "languageName": {
+            "simpleText": "Ganda"
+          }
+        },
+        {
+          "languageCode": "ka",
+          "languageName": {
+            "simpleText": "Georgian"
+          }
+        },
+        {
+          "languageCode": "de",
+          "languageName": {
+            "simpleText": "German"
+          }
+        },
+        {
+          "languageCode": "el",
+          "languageName": {
+            "simpleText": "Greek"
+          }
+        },
+        {
+          "languageCode": "gn",
+          "languageName": {
+            "simpleText": "Guarani"
+          }
+        },
+        {
+          "languageCode": "gu",
+          "languageName": {
+            "simpleText": "Gujarati"
+          }
+        },
+        {
+          "languageCode": "ht",
+          "languageName": {
+            "simpleText": "Haitian Creole"
+          }
+        },
+        {
+          "languageCode": "ha",
+          "languageName": {
+            "simpleText": "Hausa"
+          }
+        },
+        {
+          "languageCode": "haw",
+          "languageName": {
+            "simpleText": "Hawaiian"
+          }
+        },
+        {
+          "languageCode": "iw",
+          "languageName": {
+            "simpleText": "Hebrew"
+          }
+        },
+        {
+          "languageCode": "hi",
+          "languageName": {
+            "simpleText": "Hindi"
+          }
+        },
+        {
+          "languageCode": "hmn",
+          "languageName": {
+            "simpleText": "Hmong"
+          }
+        },
+        {
+          "languageCode": "hu",
+          "languageName": {
+            "simpleText": "Hungarian"
+          }
+        },
+        {
+          "languageCode": "is",
+          "languageName": {
+            "simpleText": "Icelandic"
+          }
+        },
+        {
+          "languageCode": "ig",
+          "languageName": {
+            "simpleText": "Igbo"
+          }
+        },
+        {
+          "languageCode": "id",
+          "languageName": {
+            "simpleText": "Indonesian"
+          }
+        },
+        {
+          "languageCode": "iu",
+          "languageName": {
+            "simpleText": "Inuktitut"
+          }
+        },
+        {
+          "languageCode": "ga",
+          "languageName": {
+            "simpleText": "Irish"
+          }
+        },
+        {
+          "languageCode": "it",
+          "languageName": {
+            "simpleText": "Italian"
+          }
+        },
+        {
+          "languageCode": "ja",
+          "languageName": {
+            "simpleText": "Japanese"
+          }
+        },
+        {
+          "languageCode": "jv",
+          "languageName": {
+            "simpleText": "Javanese"
+          }
+        },
+        {
+          "languageCode": "kl",
+          "languageName": {
+            "simpleText": "Kalaallisut"
+          }
+        },
+        {
+          "languageCode": "kn",
+          "languageName": {
+            "simpleText": "Kannada"
+          }
+        },
+        {
+          "languageCode": "kk",
+          "languageName": {
+            "simpleText": "Kazakh"
+          }
+        },
+        {
+          "languageCode": "kha",
+          "languageName": {
+            "simpleText": "Khasi"
+          }
+        },
+        {
+          "languageCode": "km",
+          "languageName": {
+            "simpleText": "Khmer"
+          }
+        },
+        {
+          "languageCode": "rw",
+          "languageName": {
+            "simpleText": "Kinyarwanda"
+          }
+        },
+        {
+          "languageCode": "ko",
+          "languageName": {
+            "simpleText": "Korean"
+          }
+        },
+        {
+          "languageCode": "kri",
+          "languageName": {
+            "simpleText": "Krio"
+          }
+        },
+        {
+          "languageCode": "ku",
+          "languageName": {
+            "simpleText": "Kurdish"
+          }
+        },
+        {
+          "languageCode": "ky",
+          "languageName": {
+            "simpleText": "Kyrgyz"
+          }
+        },
+        {
+          "languageCode": "lo",
+          "languageName": {
+            "simpleText": "Lao"
+          }
+        },
+        {
+          "languageCode": "la",
+          "languageName": {
+            "simpleText": "Latin"
+          }
+        },
+        {
+          "languageCode": "lv",
+          "languageName": {
+            "simpleText": "Latvian"
+          }
+        },
+        {
+          "languageCode": "ln",
+          "languageName": {
+            "simpleText": "Lingala"
+          }
+        },
+        {
+          "languageCode": "lt",
+          "languageName": {
+            "simpleText": "Lithuanian"
+          }
+        },
+        {
+          "languageCode": "lua",
+          "languageName": {
+            "simpleText": "Luba-Lulua"
+          }
+        },
+        {
+          "languageCode": "luo",
+          "languageName": {
+            "simpleText": "Luo"
+          }
+        },
+        {
+          "languageCode": "lb",
+          "languageName": {
+            "simpleText": "Luxembourgish"
+          }
+        },
+        {
+          "languageCode": "mk",
+          "languageName": {
+            "simpleText": "Macedonian"
+          }
+        },
+        {
+          "languageCode": "mg",
+          "languageName": {
+            "simpleText": "Malagasy"
+          }
+        },
+        {
+          "languageCode": "ms",
+          "languageName": {
+            "simpleText": "Malay"
+          }
+        },
+        {
+          "languageCode": "ml",
+          "languageName": {
+            "simpleText": "Malayalam"
+          }
+        },
+        {
+          "languageCode": "mt",
+          "languageName": {
+            "simpleText": "Maltese"
+          }
+        },
+        {
+          "languageCode": "gv",
+          "languageName": {
+            "simpleText": "Manx"
+          }
+        },
+        {
+          "languageCode": "mi",
+          "languageName": {
+            "simpleText": "Māori"
+          }
+        },
+        {
+          "languageCode": "mr",
+          "languageName": {
+            "simpleText": "Marathi"
+          }
+        },
+        {
+          "languageCode": "mn",
+          "languageName": {
+            "simpleText": "Mongolian"
+          }
+        },
+        {
+          "languageCode": "mfe",
+          "languageName": {
+            "simpleText": "Morisyen"
+          }
+        },
+        {
+          "languageCode": "ne",
+          "languageName": {
+            "simpleText": "Nepali"
+          }
+        },
+        {
+          "languageCode": "new",
+          "languageName": {
+            "simpleText": "Newari"
+          }
+        },
+        {
+          "languageCode": "nso",
+          "languageName": {
+            "simpleText": "Northern Sotho"
+          }
+        },
+        {
+          "languageCode": "no",
+          "languageName": {
+            "simpleText": "Norwegian"
+          }
+        },
+        {
+          "languageCode": "ny",
+          "languageName": {
+            "simpleText": "Nyanja"
+          }
+        },
+        {
+          "languageCode": "oc",
+          "languageName": {
+            "simpleText": "Occitan"
+          }
+        },
+        {
+          "languageCode": "or",
+          "languageName": {
+            "simpleText": "Odia"
+          }
+        },
+        {
+          "languageCode": "om",
+          "languageName": {
+            "simpleText": "Oromo"
+          }
+        },
+        {
+          "languageCode": "os",
+          "languageName": {
+            "simpleText": "Ossetic"
+          }
+        },
+        {
+          "languageCode": "pam",
+          "languageName": {
+            "simpleText": "Pampanga"
+          }
+        },
+        {
+          "languageCode": "ps",
+          "languageName": {
+            "simpleText": "Pashto"
+          }
+        },
+        {
+          "languageCode": "fa",
+          "languageName": {
+            "simpleText": "Persian"
+          }
+        },
+        {
+          "languageCode": "pl",
+          "languageName": {
+            "simpleText": "Polish"
+          }
+        },
+        {
+          "languageCode": "pt",
+          "languageName": {
+            "simpleText": "Portuguese"
+          }
+        },
+        {
+          "languageCode": "pt-PT",
+          "languageName": {
+            "simpleText": "Portuguese (Portugal)"
+          }
+        },
+        {
+          "languageCode": "pa",
+          "languageName": {
+            "simpleText": "Punjabi"
+          }
+        },
+        {
+          "languageCode": "qu",
+          "languageName": {
+            "simpleText": "Quechua"
+          }
+        },
+        {
+          "languageCode": "ro",
+          "languageName": {
+            "simpleText": "Romanian"
+          }
+        },
+        {
+          "languageCode": "rn",
+          "languageName": {
+            "simpleText": "Rundi"
+          }
+        },
+        {
+          "languageCode": "ru",
+          "languageName": {
+            "simpleText": "Russian"
+          }
+        },
+        {
+          "languageCode": "sm",
+          "languageName": {
+            "simpleText": "Samoan"
+          }
+        },
+        {
+          "languageCode": "sg",
+          "languageName": {
+            "simpleText": "Sango"
+          }
+        },
+        {
+          "languageCode": "sa",
+          "languageName": {
+            "simpleText": "Sanskrit"
+          }
+        },
+        {
+          "languageCode": "gd",
+          "languageName": {
+            "simpleText": "Scottish Gaelic"
+          }
+        },
+        {
+          "languageCode": "sr",
+          "languageName": {
+            "simpleText": "Serbian"
+          }
+        },
+        {
+          "languageCode": "crs",
+          "languageName": {
+            "simpleText": "Seselwa Creole French"
+          }
+        },
+        {
+          "languageCode": "sn",
+          "languageName": {
+            "simpleText": "Shona"
+          }
+        },
+        {
+          "languageCode": "sd",
+          "languageName": {
+            "simpleText": "Sindhi"
+          }
+        },
+        {
+          "languageCode": "si",
+          "languageName": {
+            "simpleText": "Sinhala"
+          }
+        },
+        {
+          "languageCode": "sk",
+          "languageName": {
+            "simpleText": "Slovak"
+          }
+        },
+        {
+          "languageCode": "sl",
+          "languageName": {
+            "simpleText": "Slovenian"
+          }
+        },
+        {
+          "languageCode": "so",
+          "languageName": {
+            "simpleText": "Somali"
+          }
+        },
+        {
+          "languageCode": "st",
+          "languageName": {
+            "simpleText": "Southern Sotho"
+          }
+        },
+        {
+          "languageCode": "es",
+          "languageName": {
+            "simpleText": "Spanish"
+          }
+        },
+        {
+          "languageCode": "su",
+          "languageName": {
+            "simpleText": "Sundanese"
+          }
+        },
+        {
+          "languageCode": "sw",
+          "languageName": {
+            "simpleText": "Swahili"
+          }
+        },
+        {
+          "languageCode": "ss",
+          "languageName": {
+            "simpleText": "Swati"
+          }
+        },
+        {
+          "languageCode": "sv",
+          "languageName": {
+            "simpleText": "Swedish"
+          }
+        },
+        {
+          "languageCode": "tg",
+          "languageName": {
+            "simpleText": "Tajik"
+          }
+        },
+        {
+          "languageCode": "ta",
+          "languageName": {
+            "simpleText": "Tamil"
+          }
+        },
+        {
+          "languageCode": "tt",
+          "languageName": {
+            "simpleText": "Tatar"
+          }
+        },
+        {
+          "languageCode": "te",
+          "languageName": {
+            "simpleText": "Telugu"
+          }
+        },
+        {
+          "languageCode": "th",
+          "languageName": {
+            "simpleText": "Thai"
+          }
+        },
+        {
+          "languageCode": "bo",
+          "languageName": {
+            "simpleText": "Tibetan"
+          }
+        },
+        {
+          "languageCode": "ti",
+          "languageName": {
+            "simpleText": "Tigrinya"
+          }
+        },
+        {
+          "languageCode": "to",
+          "languageName": {
+            "simpleText": "Tongan"
+          }
+        },
+        {
+          "languageCode": "ts",
+          "languageName": {
+            "simpleText": "Tsonga"
+          }
+        },
+        {
+          "languageCode": "tn",
+          "languageName": {
+            "simpleText": "Tswana"
+          }
+        },
+        {
+          "languageCode": "tum",
+          "languageName": {
+            "simpleText": "Tumbuka"
+          }
+        },
+        {
+          "languageCode": "tr",
+          "languageName": {
+            "simpleText": "Turkish"
+          }
+        },
+        {
+          "languageCode": "tk",
+          "languageName": {
+            "simpleText": "Turkmen"
+          }
+        },
+        {
+          "languageCode": "uk",
+          "languageName": {
+            "simpleText": "Ukrainian"
+          }
+        },
+        {
+          "languageCode": "ur",
+          "languageName": {
+            "simpleText": "Urdu"
+          }
+        },
+        {
+          "languageCode": "ug",
+          "languageName": {
+            "simpleText": "Uyghur"
+          }
+        },
+        {
+          "languageCode": "uz",
+          "languageName": {
+            "simpleText": "Uzbek"
+          }
+        },
+        {
+          "languageCode": "ve",
+          "languageName": {
+            "simpleText": "Venda"
+          }
+        },
+        {
+          "languageCode": "vi",
+          "languageName": {
+            "simpleText": "Vietnamese"
+          }
+        },
+        {
+          "languageCode": "war",
+          "languageName": {
+            "simpleText": "Waray"
+          }
+        },
+        {
+          "languageCode": "cy",
+          "languageName": {
+            "simpleText": "Welsh"
+          }
+        },
+        {
+          "languageCode": "fy",
+          "languageName": {
+            "simpleText": "Western Frisian"
+          }
+        },
+        {
+          "languageCode": "wo",
+          "languageName": {
+            "simpleText": "Wolof"
+          }
+        },
+        {
+          "languageCode": "xh",
+          "languageName": {
+            "simpleText": "Xhosa"
+          }
+        },
+        {
+          "languageCode": "yi",
+          "languageName": {
+            "simpleText": "Yiddish"
+          }
+        },
+        {
+          "languageCode": "yo",
+          "languageName": {
+            "simpleText": "Yoruba"
+          }
+        },
+        {
+          "languageCode": "zu",
+          "languageName": {
+            "simpleText": "Zulu"
+          }
+        }
+      ],
+      "defaultAudioTrackIndex": 0
+    }
+  },
+  "transcript": [
+    {
+      "text": "so unfortunately it looks like Luc o",
+      "duration": 3.719,
+      "offset": 0.16,
+      "lang": "en"
+    },
+    {
+      "text": "which is the package I've been using for",
+      "duration": 4.519,
+      "offset": 2.28,
+      "lang": "en"
+    },
+    {
+      "text": "authentication in my little starter kit",
+      "duration": 5.121,
+      "offset": 3.879,
+      "lang": "en"
+    },
+    {
+      "text": "and some other projects is going to be",
+      "duration": 3.92,
+      "offset": 6.799,
+      "lang": "en"
+    },
+    {
+      "text": "deprecated early next year so what does",
+      "duration": 3.32,
+      "offset": 9,
+      "lang": "en"
+    },
+    {
+      "text": "that mean for you if you just started a",
+      "duration": 3.88,
+      "offset": 10.719,
+      "lang": "en"
+    },
+    {
+      "text": "project or if you cloned my starter kit",
+      "duration": 4.28,
+      "offset": 12.32,
+      "lang": "en"
+    },
+    {
+      "text": "it doesn't mean too much because getting",
+      "duration": 4.481,
+      "offset": 14.599,
+      "lang": "en"
+    },
+    {
+      "text": "off of Lucia is actually really easy so",
+      "duration": 4.72,
+      "offset": 16.6,
+      "lang": "en"
+    },
+    {
+      "text": "if you look at this early preview the",
+      "duration": 3.88,
+      "offset": 19.08,
+      "lang": "en"
+    },
+    {
+      "text": "plan is the maintainer is going to",
+      "duration": 3.92,
+      "offset": 21.32,
+      "lang": "en"
+    },
+    {
+      "text": "provide some nice documentation to walk",
+      "duration": 4.159,
+      "offset": 22.96,
+      "lang": "en"
+    },
+    {
+      "text": "you through how you can set up your off",
+      "duration": 4.76,
+      "offset": 25.24,
+      "lang": "en"
+    },
+    {
+      "text": "yourself and he has code Snippets that b",
+      "duration": 4.48,
+      "offset": 27.119,
+      "lang": "en"
+    },
+    {
+      "text": "basically map directly to if you're",
+      "duration": 4.12,
+      "offset": 30,
+      "lang": "en"
+    },
+    {
+      "text": "using drizzle like I am in my projects",
+      "duration": 4.48,
+      "offset": 31.599,
+      "lang": "en"
+    },
+    {
+      "text": "how you can basically write the",
+      "duration": 4.04,
+      "offset": 34.12,
+      "lang": "en"
+    },
+    {
+      "text": "functions as it was working inside of",
+      "duration": 4.121,
+      "offset": 36.079,
+      "lang": "en"
+    },
+    {
+      "text": "luo and this is something that I just",
+      "duration": 3.84,
+      "offset": 38.16,
+      "lang": "en"
+    },
+    {
+      "text": "did on my starter kit I went through",
+      "duration": 4.039,
+      "offset": 40.2,
+      "lang": "en"
+    },
+    {
+      "text": "this documentation I applied it to my",
+      "duration": 4.879,
+      "offset": 42,
+      "lang": "en"
+    },
+    {
+      "text": "starter kit uh basically it's just like",
+      "duration": 5.121,
+      "offset": 44.239,
+      "lang": "en"
+    },
+    {
+      "text": "two files I had to change and now",
+      "duration": 4.36,
+      "offset": 46.879,
+      "lang": "en"
+    },
+    {
+      "text": "everything's working as it did before",
+      "duration": 3.56,
+      "offset": 49.36,
+      "lang": "en"
+    },
+    {
+      "text": "but instead I'm not using Lucy anywhere",
+      "duration": 3.721,
+      "offset": 51.239,
+      "lang": "en"
+    },
+    {
+      "text": "if I search this whole project for Lucia",
+      "duration": 3.92,
+      "offset": 52.92,
+      "lang": "en"
+    },
+    {
+      "text": "doesn't come up because I've removed it",
+      "duration": 2.919,
+      "offset": 54.96,
+      "lang": "en"
+    },
+    {
+      "text": "so I'm going to walk you through like",
+      "duration": 3.239,
+      "offset": 56.84,
+      "lang": "en"
+    },
+    {
+      "text": "the overall way you can get off of it",
+      "duration": 3.52,
+      "offset": 57.879,
+      "lang": "en"
+    },
+    {
+      "text": "then also kind of like we should",
+      "duration": 3.8,
+      "offset": 60.079,
+      "lang": "en"
+    },
+    {
+      "text": "probably talk about open source okay I",
+      "duration": 3.921,
+      "offset": 61.399,
+      "lang": "en"
+    },
+    {
+      "text": "have been kind of vocal about open",
+      "duration": 3.24,
+      "offset": 63.879,
+      "lang": "en"
+    },
+    {
+      "text": "source and the more packages you depend",
+      "duration": 3.479,
+      "offset": 65.32,
+      "lang": "en"
+    },
+    {
+      "text": "on the higher chance that these packages",
+      "duration": 4.201,
+      "offset": 67.119,
+      "lang": "en"
+    },
+    {
+      "text": "will be deprecated they will have issues",
+      "duration": 5,
+      "offset": 68.799,
+      "lang": "en"
+    },
+    {
+      "text": "you'll have to update them and I would",
+      "duration": 4.76,
+      "offset": 71.32,
+      "lang": "en"
+    },
+    {
+      "text": "again recommend find ways to use less",
+      "duration": 4.281,
+      "offset": 73.799,
+      "lang": "en"
+    },
+    {
+      "text": "and less thirdparty libraries if that's",
+      "duration": 3.96,
+      "offset": 76.08,
+      "lang": "en"
+    },
+    {
+      "text": "even a possibility because as we saw in",
+      "duration": 3.88,
+      "offset": 78.08,
+      "lang": "en"
+    },
+    {
+      "text": "this package it was a thirdparty package",
+      "duration": 4.52,
+      "offset": 80.04,
+      "lang": "en"
+    },
+    {
+      "text": "maintained by a single person I'm pretty",
+      "duration": 4.119,
+      "offset": 81.96,
+      "lang": "en"
+    },
+    {
+      "text": "sure he's like 20 years old probably in",
+      "duration": 3.12,
+      "offset": 84.56,
+      "lang": "en"
+    },
+    {
+      "text": "college didn't have time to actually do",
+      "duration": 4.161,
+      "offset": 86.079,
+      "lang": "en"
+    },
+    {
+      "text": "all this stuff anymore and he replicated",
+      "duration": 4.079,
+      "offset": 87.68,
+      "lang": "en"
+    },
+    {
+      "text": "it and this isn't a new occurrence I've",
+      "duration": 2.96,
+      "offset": 90.24,
+      "lang": "en"
+    },
+    {
+      "text": "seen this all the time in the JavaScript",
+      "duration": 3.32,
+      "offset": 91.759,
+      "lang": "en"
+    },
+    {
+      "text": "ecosystem where you you'll use a package",
+      "duration": 3.64,
+      "offset": 93.2,
+      "lang": "en"
+    },
+    {
+      "text": "then next year there's a new hype",
+      "duration": 3.241,
+      "offset": 95.079,
+      "lang": "en"
+    },
+    {
+      "text": "package that you use instead and then",
+      "duration": 3,
+      "offset": 96.84,
+      "lang": "en"
+    },
+    {
+      "text": "you have to keep switching packages and",
+      "duration": 3.72,
+      "offset": 98.32,
+      "lang": "en"
+    },
+    {
+      "text": "packages so the main takeaway is a try",
+      "duration": 4.48,
+      "offset": 99.84,
+      "lang": "en"
+    },
+    {
+      "text": "to use less packages and B make sure",
+      "duration": 4.8,
+      "offset": 102.04,
+      "lang": "en"
+    },
+    {
+      "text": "that you isolate where your library is",
+      "duration": 5.56,
+      "offset": 104.32,
+      "lang": "en"
+    },
+    {
+      "text": "being used um in this case my Lucia",
+      "duration": 4.76,
+      "offset": 106.84,
+      "lang": "en"
+    },
+    {
+      "text": "library is only used in like a couple of",
+      "duration": 3.559,
+      "offset": 109.88,
+      "lang": "en"
+    },
+    {
+      "text": "files like maybe four or five files and",
+      "duration": 4.76,
+      "offset": 111.6,
+      "lang": "en"
+    },
+    {
+      "text": "so refactoring that away super easy if",
+      "duration": 5.121,
+      "offset": 113.439,
+      "lang": "en"
+    },
+    {
+      "text": "it was a different library and you had",
+      "duration": 4.359,
+      "offset": 116.36,
+      "lang": "en"
+    },
+    {
+      "text": "this Library who who knows what library",
+      "duration": 3.919,
+      "offset": 118.56,
+      "lang": "en"
+    },
+    {
+      "text": "it is let's say it's like low Dash and",
+      "duration": 3.44,
+      "offset": 120.719,
+      "lang": "en"
+    },
+    {
+      "text": "you have low Dash sprinkled throughout",
+      "duration": 3.92,
+      "offset": 122.479,
+      "lang": "en"
+    },
+    {
+      "text": "hundreds of files and then all of a",
+      "duration": 3.441,
+      "offset": 124.159,
+      "lang": "en"
+    },
+    {
+      "text": "sudden they come through and say Hey low",
+      "duration": 2.881,
+      "offset": 126.399,
+      "lang": "en"
+    },
+    {
+      "text": "Dash is being deprecated that's going to",
+      "duration": 3.8,
+      "offset": 127.6,
+      "lang": "en"
+    },
+    {
+      "text": "be a lot more work so it might be a good",
+      "duration": 3.44,
+      "offset": 129.28,
+      "lang": "en"
+    },
+    {
+      "text": "idea depending on the library and how",
+      "duration": 3.4,
+      "offset": 131.4,
+      "lang": "en"
+    },
+    {
+      "text": "much uh blast radius it has in your",
+      "duration": 5.2,
+      "offset": 132.72,
+      "lang": "en"
+    },
+    {
+      "text": "project to use a little wrapper around",
+      "duration": 5.28,
+      "offset": 134.8,
+      "lang": "en"
+    },
+    {
+      "text": "it so that if you ever need to get off",
+      "duration": 3.959,
+      "offset": 137.92,
+      "lang": "en"
+    },
+    {
+      "text": "of it you just have to change one file",
+      "duration": 3,
+      "offset": 140.08,
+      "lang": "en"
+    },
+    {
+      "text": "and that's it instead of having to go",
+      "duration": 3.801,
+      "offset": 141.879,
+      "lang": "en"
+    },
+    {
+      "text": "and change a bunch anyway that's my tip",
+      "duration": 3.96,
+      "offset": 143.08,
+      "lang": "en"
+    },
+    {
+      "text": "for you guys how do you get off of this",
+      "duration": 3.44,
+      "offset": 145.68,
+      "lang": "en"
+    },
+    {
+      "text": "thing okay well I would recommend",
+      "duration": 3.839,
+      "offset": 147.04,
+      "lang": "en"
+    },
+    {
+      "text": "reading through this cuz he does explain",
+      "duration": 3.479,
+      "offset": 149.12,
+      "lang": "en"
+    },
+    {
+      "text": "how o Works he explains like what these",
+      "duration": 4.72,
+      "offset": 150.879,
+      "lang": "en"
+    },
+    {
+      "text": "functions do he explains why we generate",
+      "duration": 5.841,
+      "offset": 152.599,
+      "lang": "en"
+    },
+    {
+      "text": "a session token using uh this function",
+      "duration": 5.121,
+      "offset": 155.599,
+      "lang": "en"
+    },
+    {
+      "text": "instead of using math. random it's a lot",
+      "duration": 4.84,
+      "offset": 158.44,
+      "lang": "en"
+    },
+    {
+      "text": "of good information I highly recommend",
+      "duration": 4.28,
+      "offset": 160.72,
+      "lang": "en"
+    },
+    {
+      "text": "understand off a little bit don't just",
+      "duration": 3.679,
+      "offset": 163.28,
+      "lang": "en"
+    },
+    {
+      "text": "pull in an off library and use it",
+      "duration": 4.599,
+      "offset": 165,
+      "lang": "en"
+    },
+    {
+      "text": "because o is too scary or too hard to do",
+      "duration": 4.801,
+      "offset": 166.959,
+      "lang": "en"
+    },
+    {
+      "text": "it's it's not too bad right read through",
+      "duration": 4.28,
+      "offset": 169.599,
+      "lang": "en"
+    },
+    {
+      "text": "this tells you how to create a session",
+      "duration": 3.28,
+      "offset": 171.76,
+      "lang": "en"
+    },
+    {
+      "text": "he tells you how to actually like",
+      "duration": 3.241,
+      "offset": 173.879,
+      "lang": "en"
+    },
+    {
+      "text": "validate the session token if you want",
+      "duration": 3.44,
+      "offset": 175.04,
+      "lang": "en"
+    },
+    {
+      "text": "to skip to the fast part just go to the",
+      "duration": 3.72,
+      "offset": 177.12,
+      "lang": "en"
+    },
+    {
+      "text": "bottom copy all this code and put into a",
+      "duration": 5.16,
+      "offset": 178.48,
+      "lang": "en"
+    },
+    {
+      "text": "file called like sessions. TS and that",
+      "duration": 4.319,
+      "offset": 180.84,
+      "lang": "en"
+    },
+    {
+      "text": "is going to have all the functions you",
+      "duration": 3.56,
+      "offset": 183.64,
+      "lang": "en"
+    },
+    {
+      "text": "need to get Lucio working like it used",
+      "duration": 4.121,
+      "offset": 185.159,
+      "lang": "en"
+    },
+    {
+      "text": "to or get your code working against",
+      "duration": 3.8,
+      "offset": 187.2,
+      "lang": "en"
+    },
+    {
+      "text": "something that's kind of like Lucia",
+      "duration": 3.44,
+      "offset": 189.28,
+      "lang": "en"
+    },
+    {
+      "text": "using drizzle and then go through your",
+      "duration": 3.599,
+      "offset": 191,
+      "lang": "en"
+    },
+    {
+      "text": "code base and anywhere that you're doing",
+      "duration": 5.159,
+      "offset": 192.72,
+      "lang": "en"
+    },
+    {
+      "text": "lucia. validate session instead what you",
+      "duration": 5.521,
+      "offset": 194.599,
+      "lang": "en"
+    },
+    {
+      "text": "do is click on this migrate from luciao",
+      "duration": 4.36,
+      "offset": 197.879,
+      "lang": "en"
+    },
+    {
+      "text": "V3 and here's all you need to do",
+      "duration": 3.52,
+      "offset": 200.12,
+      "lang": "en"
+    },
+    {
+      "text": "anywhere you're doing Lucio create",
+      "duration": 3.481,
+      "offset": 202.239,
+      "lang": "en"
+    },
+    {
+      "text": "session instead you just call those",
+      "duration": 3.92,
+      "offset": 203.64,
+      "lang": "en"
+    },
+    {
+      "text": "methods that we just talked about",
+      "duration": 3.439,
+      "offset": 205.72,
+      "lang": "en"
+    },
+    {
+      "text": "anywhere you're calling validate session",
+      "duration": 3.679,
+      "offset": 207.56,
+      "lang": "en"
+    },
+    {
+      "text": "instead you call validate session token",
+      "duration": 3.64,
+      "offset": 209.159,
+      "lang": "en"
+    },
+    {
+      "text": "anywhere you're invalidating the session",
+      "duration": 4.28,
+      "offset": 211.239,
+      "lang": "en"
+    },
+    {
+      "text": "you do invalidate session and then the",
+      "duration": 4.681,
+      "offset": 212.799,
+      "lang": "en"
+    },
+    {
+      "text": "cookie ones create session cookie and",
+      "duration": 4.321,
+      "offset": 215.519,
+      "lang": "en"
+    },
+    {
+      "text": "create blank session cookie there are",
+      "duration": 4.52,
+      "offset": 217.48,
+      "lang": "en"
+    },
+    {
+      "text": "functions for this as well if you go to",
+      "duration": 3.959,
+      "offset": 219.84,
+      "lang": "en"
+    },
+    {
+      "text": "cookies those two methods I talked about",
+      "duration": 3.84,
+      "offset": 222,
+      "lang": "en"
+    },
+    {
+      "text": "for cookies are here and it's using the",
+      "duration": 3.8,
+      "offset": 223.799,
+      "lang": "en"
+    },
+    {
+      "text": "next headers cookie library to kind of",
+      "duration": 3.759,
+      "offset": 225.84,
+      "lang": "en"
+    },
+    {
+      "text": "remove and set cookies all right let's",
+      "duration": 3.28,
+      "offset": 227.599,
+      "lang": "en"
+    },
+    {
+      "text": "look at the first function generate",
+      "duration": 2.92,
+      "offset": 229.599,
+      "lang": "en"
+    },
+    {
+      "text": "session token so this is basically just",
+      "duration": 4.161,
+      "offset": 230.879,
+      "lang": "en"
+    },
+    {
+      "text": "generating a a really long random string",
+      "duration": 4.161,
+      "offset": 232.519,
+      "lang": "en"
+    },
+    {
+      "text": "of characters right and we use a crypto",
+      "duration": 3.039,
+      "offset": 235.04,
+      "lang": "en"
+    },
+    {
+      "text": "Library instead of math. random because",
+      "duration": 3.52,
+      "offset": 236.68,
+      "lang": "en"
+    },
+    {
+      "text": "it's more secure and that is explained",
+      "duration": 4.36,
+      "offset": 238.079,
+      "lang": "en"
+    },
+    {
+      "text": "in the documentation that he talked",
+      "duration": 4.399,
+      "offset": 240.2,
+      "lang": "en"
+    },
+    {
+      "text": "about over here and this is the token",
+      "duration": 3.961,
+      "offset": 242.439,
+      "lang": "en"
+    },
+    {
+      "text": "that is going to be put in the user's",
+      "duration": 4.441,
+      "offset": 244.599,
+      "lang": "en"
+    },
+    {
+      "text": "browser okay now let's keep going we",
+      "duration": 5.119,
+      "offset": 246.4,
+      "lang": "en"
+    },
+    {
+      "text": "have create session and this is",
+      "duration": 3.759,
+      "offset": 249.04,
+      "lang": "en"
+    },
+    {
+      "text": "something that's going to take in that",
+      "duration": 3.321,
+      "offset": 251.519,
+      "lang": "en"
+    },
+    {
+      "text": "token that we just talked about and it",
+      "duration": 4.761,
+      "offset": 252.799,
+      "lang": "en"
+    },
+    {
+      "text": "actually hashes it so we get a session",
+      "duration": 6.519,
+      "offset": 254.84,
+      "lang": "en"
+    },
+    {
+      "text": "ID and the session ID looks like this",
+      "duration": 6.639,
+      "offset": 257.56,
+      "lang": "en"
+    },
+    {
+      "text": "and that's what we store in the database",
+      "duration": 4.56,
+      "offset": 261.359,
+      "lang": "en"
+    },
+    {
+      "text": "okay so we don't store the actual token",
+      "duration": 4.121,
+      "offset": 264.199,
+      "lang": "en"
+    },
+    {
+      "text": "in the database we store a hash of the",
+      "duration": 4.401,
+      "offset": 265.919,
+      "lang": "en"
+    },
+    {
+      "text": "token now the reason we do this the",
+      "duration": 3.319,
+      "offset": 268.32,
+      "lang": "en"
+    },
+    {
+      "text": "hashing is because if someone were to",
+      "duration": 2.719,
+      "offset": 270.32,
+      "lang": "en"
+    },
+    {
+      "text": "accidentally gain access to your",
+      "duration": 3.481,
+      "offset": 271.639,
+      "lang": "en"
+    },
+    {
+      "text": "database or breach your database even",
+      "duration": 3.6,
+      "offset": 273.039,
+      "lang": "en"
+    },
+    {
+      "text": "though you might have thousands of user",
+      "duration": 3.32,
+      "offset": 275.12,
+      "lang": "en"
+    },
+    {
+      "text": "sessions in here they couldn't do",
+      "duration": 3,
+      "offset": 276.639,
+      "lang": "en"
+    },
+    {
+      "text": "anything with the session because they",
+      "duration": 3.88,
+      "offset": 278.44,
+      "lang": "en"
+    },
+    {
+      "text": "need a real token and not this hashed ID",
+      "duration": 4.201,
+      "offset": 279.639,
+      "lang": "en"
+    },
+    {
+      "text": "okay so that's why we're hashing it now",
+      "duration": 3.159,
+      "offset": 282.32,
+      "lang": "en"
+    },
+    {
+      "text": "let's look down here validate session",
+      "duration": 3.4,
+      "offset": 283.84,
+      "lang": "en"
+    },
+    {
+      "text": "token this takes in that token which",
+      "duration": 3.401,
+      "offset": 285.479,
+      "lang": "en"
+    },
+    {
+      "text": "will be on a cookie in the user's",
+      "duration": 4.959,
+      "offset": 287.24,
+      "lang": "en"
+    },
+    {
+      "text": "browser and again we hash it to get that",
+      "duration": 5.4,
+      "offset": 288.88,
+      "lang": "en"
+    },
+    {
+      "text": "ID and then we look it up in the",
+      "duration": 4.601,
+      "offset": 292.199,
+      "lang": "en"
+    },
+    {
+      "text": "database so that'll just go up here and",
+      "duration": 5.88,
+      "offset": 294.28,
+      "lang": "en"
+    },
+    {
+      "text": "grab this and then we make sure that it",
+      "duration": 4.92,
+      "offset": 296.8,
+      "lang": "en"
+    },
+    {
+      "text": "exists and if it doesn't we return just",
+      "duration": 3.64,
+      "offset": 300.16,
+      "lang": "en"
+    },
+    {
+      "text": "null and null and then we look up the",
+      "duration": 4.919,
+      "offset": 301.72,
+      "lang": "en"
+    },
+    {
+      "text": "user and make sure that the user exists",
+      "duration": 6,
+      "offset": 303.8,
+      "lang": "en"
+    },
+    {
+      "text": "using that session row if it exists then",
+      "duration": 6.201,
+      "offset": 306.639,
+      "lang": "en"
+    },
+    {
+      "text": "good now what we need to do is check if",
+      "duration": 5,
+      "offset": 309.8,
+      "lang": "en"
+    },
+    {
+      "text": "the token is expired so if the token is",
+      "duration": 3.44,
+      "offset": 312.84,
+      "lang": "en"
+    },
+    {
+      "text": "expired notice over here we have an",
+      "duration": 5.519,
+      "offset": 314.8,
+      "lang": "en"
+    },
+    {
+      "text": "expires at on this row if it is expired",
+      "duration": 5.56,
+      "offset": 316.28,
+      "lang": "en"
+    },
+    {
+      "text": "we just go ahead and delete that session",
+      "duration": 4.561,
+      "offset": 320.319,
+      "lang": "en"
+    },
+    {
+      "text": "row and then we return uh session null",
+      "duration": 6.88,
+      "offset": 321.84,
+      "lang": "en"
+    },
+    {
+      "text": "usern null okay if the session is less",
+      "duration": 6.759,
+      "offset": 324.88,
+      "lang": "en"
+    },
+    {
+      "text": "than half the session expiration time",
+      "duration": 5.12,
+      "offset": 328.72,
+      "lang": "en"
+    },
+    {
+      "text": "which happens to be 15 days so if you",
+      "duration": 4.4,
+      "offset": 331.639,
+      "lang": "en"
+    },
+    {
+      "text": "look at the session and it's under 15",
+      "duration": 4.56,
+      "offset": 333.84,
+      "lang": "en"
+    },
+    {
+      "text": "days what happens is we just extend the",
+      "duration": 4.6,
+      "offset": 336.039,
+      "lang": "en"
+    },
+    {
+      "text": "session by another 30 days and then we",
+      "duration": 4.28,
+      "offset": 338.4,
+      "lang": "en"
+    },
+    {
+      "text": "update the database so that'll go over",
+      "duration": 4.521,
+      "offset": 340.639,
+      "lang": "en"
+    },
+    {
+      "text": "here and update this and now we just",
+      "duration": 4.44,
+      "offset": 342.68,
+      "lang": "en"
+    },
+    {
+      "text": "return the session in the user and",
+      "duration": 3.8,
+      "offset": 345.16,
+      "lang": "en"
+    },
+    {
+      "text": "whatever is using this would know that",
+      "duration": 3.4,
+      "offset": 347.12,
+      "lang": "en"
+    },
+    {
+      "text": "it's a valid token because we check that",
+      "duration": 4.84,
+      "offset": 348.96,
+      "lang": "en"
+    },
+    {
+      "text": "it exists the user exists and that the",
+      "duration": 5.519,
+      "offset": 350.52,
+      "lang": "en"
+    },
+    {
+      "text": "date hasn't expired yet and then down",
+      "duration": 3.92,
+      "offset": 353.8,
+      "lang": "en"
+    },
+    {
+      "text": "here we have invalidate session which",
+      "duration": 4,
+      "offset": 356.039,
+      "lang": "en"
+    },
+    {
+      "text": "just deletes the session from the table",
+      "duration": 4.039,
+      "offset": 357.72,
+      "lang": "en"
+    },
+    {
+      "text": "so all these functions this is the the",
+      "duration": 3.041,
+      "offset": 360.039,
+      "lang": "en"
+    },
+    {
+      "text": "most complicated one to understand but",
+      "duration": 2.521,
+      "offset": 361.759,
+      "lang": "en"
+    },
+    {
+      "text": "really it's not too hard to understand",
+      "duration": 3.16,
+      "offset": 363.08,
+      "lang": "en"
+    },
+    {
+      "text": "right it's like the logic is pretty",
+      "duration": 3.96,
+      "offset": 364.28,
+      "lang": "en"
+    },
+    {
+      "text": "simple now as far as using this like",
+      "duration": 3.48,
+      "offset": 366.24,
+      "lang": "en"
+    },
+    {
+      "text": "let's just check out the login by the",
+      "duration": 3.359,
+      "offset": 368.24,
+      "lang": "en"
+    },
+    {
+      "text": "way I've already committed this change",
+      "duration": 3.479,
+      "offset": 369.72,
+      "lang": "en"
+    },
+    {
+      "text": "to the starter kit if you want to go and",
+      "duration": 3.521,
+      "offset": 371.599,
+      "lang": "en"
+    },
+    {
+      "text": "check it out the code is all there free",
+      "duration": 3.681,
+      "offset": 373.199,
+      "lang": "en"
+    },
+    {
+      "text": "to use um if you want to read through my",
+      "duration": 3.079,
+      "offset": 375.12,
+      "lang": "en"
+    },
+    {
+      "text": "code and try to understand how it all",
+      "duration": 3.36,
+      "offset": 376.88,
+      "lang": "en"
+    },
+    {
+      "text": "works there's an oth file and there's",
+      "duration": 4.961,
+      "offset": 378.199,
+      "lang": "en"
+    },
+    {
+      "text": "also a session file so let's take a look",
+      "duration": 5.359,
+      "offset": 380.24,
+      "lang": "en"
+    },
+    {
+      "text": "at the email login so a person passes in",
+      "duration": 4.36,
+      "offset": 383.16,
+      "lang": "en"
+    },
+    {
+      "text": "an email and a password and what I do is",
+      "duration": 4.481,
+      "offset": 385.599,
+      "lang": "en"
+    },
+    {
+      "text": "I first verify hey does the password",
+      "duration": 4.16,
+      "offset": 387.52,
+      "lang": "en"
+    },
+    {
+      "text": "match the user in the database and if so",
+      "duration": 4.36,
+      "offset": 390.08,
+      "lang": "en"
+    },
+    {
+      "text": "we get back user object and then comes",
+      "duration": 4.48,
+      "offset": 391.68,
+      "lang": "en"
+    },
+    {
+      "text": "the session part the thing that Luci",
+      "duration": 3.479,
+      "offset": 394.44,
+      "lang": "en"
+    },
+    {
+      "text": "used to do which is setting the session",
+      "duration": 4.4,
+      "offset": 396.16,
+      "lang": "en"
+    },
+    {
+      "text": "on the user's cookie so let's dive into",
+      "duration": 4.601,
+      "offset": 397.919,
+      "lang": "en"
+    },
+    {
+      "text": "that function what this is going to do",
+      "duration": 3.72,
+      "offset": 400.56,
+      "lang": "en"
+    },
+    {
+      "text": "is going to call generate session token",
+      "duration": 3.28,
+      "offset": 402.52,
+      "lang": "en"
+    },
+    {
+      "text": "which we just talked about all it does",
+      "duration": 4.4,
+      "offset": 404.28,
+      "lang": "en"
+    },
+    {
+      "text": "is just generate a random um and then it",
+      "duration": 6.32,
+      "offset": 405.8,
+      "lang": "en"
+    },
+    {
+      "text": "calls create session let's look at this",
+      "duration": 6.76,
+      "offset": 408.68,
+      "lang": "en"
+    },
+    {
+      "text": "all this is doing again is hashing that",
+      "duration": 5.919,
+      "offset": 412.12,
+      "lang": "en"
+    },
+    {
+      "text": "token that we just generated and it puts",
+      "duration": 4.64,
+      "offset": 415.44,
+      "lang": "en"
+    },
+    {
+      "text": "it in the database and then it returns",
+      "duration": 4.401,
+      "offset": 418.039,
+      "lang": "en"
+    },
+    {
+      "text": "it and then finally we call set session",
+      "duration": 4.6,
+      "offset": 420.08,
+      "lang": "en"
+    },
+    {
+      "text": "token cookie which takes in that token",
+      "duration": 4.72,
+      "offset": 422.44,
+      "lang": "en"
+    },
+    {
+      "text": "and then takes in expiration time okay",
+      "duration": 4.079,
+      "offset": 424.68,
+      "lang": "en"
+    },
+    {
+      "text": "this is just setting a cookie on the",
+      "duration": 3.92,
+      "offset": 427.16,
+      "lang": "en"
+    },
+    {
+      "text": "user's browser and again this can be",
+      "duration": 4,
+      "offset": 428.759,
+      "lang": "en"
+    },
+    {
+      "text": "found right here if you go to cookies",
+      "duration": 4.16,
+      "offset": 431.08,
+      "lang": "en"
+    },
+    {
+      "text": "and go to nextjs that same code is just",
+      "duration": 4.041,
+      "offset": 432.759,
+      "lang": "en"
+    },
+    {
+      "text": "right here awesome and so now we've set",
+      "duration": 3.079,
+      "offset": 435.24,
+      "lang": "en"
+    },
+    {
+      "text": "a cookie on the user's browser and then",
+      "duration": 2.92,
+      "offset": 436.8,
+      "lang": "en"
+    },
+    {
+      "text": "when they come back into the app and try",
+      "duration": 4.481,
+      "offset": 438.319,
+      "lang": "en"
+    },
+    {
+      "text": "to load a page at some point we need to",
+      "duration": 5.64,
+      "offset": 439.72,
+      "lang": "en"
+    },
+    {
+      "text": "verify that the user making the request",
+      "duration": 4.16,
+      "offset": 442.8,
+      "lang": "en"
+    },
+    {
+      "text": "has access so let's look at validate",
+      "duration": 4.72,
+      "offset": 445.36,
+      "lang": "en"
+    },
+    {
+      "text": "request this is getting that session",
+      "duration": 5.079,
+      "offset": 446.96,
+      "lang": "en"
+    },
+    {
+      "text": "token from the cookie so it's just doing",
+      "duration": 4.76,
+      "offset": 450.08,
+      "lang": "en"
+    },
+    {
+      "text": "cookies. by the session name and getting",
+      "duration": 5.641,
+      "offset": 452.039,
+      "lang": "en"
+    },
+    {
+      "text": "the value if it doesn't exist we return",
+      "duration": 4.84,
+      "offset": 454.84,
+      "lang": "en"
+    },
+    {
+      "text": "nothing and then we call that validate",
+      "duration": 3.919,
+      "offset": 457.68,
+      "lang": "en"
+    },
+    {
+      "text": "method that we just talked about which",
+      "duration": 3.639,
+      "offset": 459.68,
+      "lang": "en"
+    },
+    {
+      "text": "is going to do all that database logic",
+      "duration": 3.16,
+      "offset": 461.599,
+      "lang": "en"
+    },
+    {
+      "text": "where it looks up the session looks up",
+      "duration": 3.121,
+      "offset": 463.319,
+      "lang": "en"
+    },
+    {
+      "text": "the user make sure it doesn't expire",
+      "duration": 3.361,
+      "offset": 464.759,
+      "lang": "en"
+    },
+    {
+      "text": "extends the expiration time and it re-",
+      "duration": 5.719,
+      "offset": 466.44,
+      "lang": "en"
+    },
+    {
+      "text": "updates it Etc so that's the flow you",
+      "duration": 6.6,
+      "offset": 468.12,
+      "lang": "en"
+    },
+    {
+      "text": "log in you set a session you put it on",
+      "duration": 4.44,
+      "offset": 472.159,
+      "lang": "en"
+    },
+    {
+      "text": "the user's cookie and then when they go",
+      "duration": 3.64,
+      "offset": 474.72,
+      "lang": "en"
+    },
+    {
+      "text": "and navigate to a page or try to do an",
+      "duration": 5.681,
+      "offset": 476.599,
+      "lang": "en"
+    },
+    {
+      "text": "action you look at the cookie you verify",
+      "duration": 7.16,
+      "offset": 478.36,
+      "lang": "en"
+    },
+    {
+      "text": "that the cookie is valid and if it is",
+      "duration": 5.199,
+      "offset": 482.28,
+      "lang": "en"
+    },
+    {
+      "text": "you return some data if not you return",
+      "duration": 3.72,
+      "offset": 485.52,
+      "lang": "en"
+    },
+    {
+      "text": "nulls or undefined or you can throw",
+      "duration": 4.081,
+      "offset": 487.479,
+      "lang": "en"
+    },
+    {
+      "text": "errors if you want to and your UI and",
+      "duration": 4.519,
+      "offset": 489.24,
+      "lang": "en"
+    },
+    {
+      "text": "your backend logic can do if statements",
+      "duration": 5.24,
+      "offset": 491.56,
+      "lang": "en"
+    },
+    {
+      "text": "to say if session is equal to null they",
+      "duration": 5.241,
+      "offset": 493.759,
+      "lang": "en"
+    },
+    {
+      "text": "don't do anything and I believe I wrap",
+      "duration": 3.64,
+      "offset": 496.8,
+      "lang": "en"
+    },
+    {
+      "text": "this in another method called get",
+      "duration": 3.52,
+      "offset": 499,
+      "lang": "en"
+    },
+    {
+      "text": "current user which basically just uses",
+      "duration": 4.8,
+      "offset": 500.44,
+      "lang": "en"
+    },
+    {
+      "text": "this and returns either the user or",
+      "duration": 4.799,
+      "offset": 502.52,
+      "lang": "en"
+    },
+    {
+      "text": "undefined and then I use get current",
+      "duration": 4.359,
+      "offset": 505.24,
+      "lang": "en"
+    },
+    {
+      "text": "user all over my code base right so",
+      "duration": 4.121,
+      "offset": 507.319,
+      "lang": "en"
+    },
+    {
+      "text": "basically say get current user if",
+      "duration": 3.44,
+      "offset": 509.599,
+      "lang": "en"
+    },
+    {
+      "text": "they're not defined then they're not",
+      "duration": 3.76,
+      "offset": 511.44,
+      "lang": "en"
+    },
+    {
+      "text": "signed in um let's look at some other",
+      "duration": 4.44,
+      "offset": 513.039,
+      "lang": "en"
+    },
+    {
+      "text": "places he right here membership button",
+      "duration": 4.16,
+      "offset": 515.2,
+      "lang": "en"
+    },
+    {
+      "text": "get the current user if it's not defined",
+      "duration": 3.641,
+      "offset": 517.479,
+      "lang": "en"
+    },
+    {
+      "text": "return null I also have like an assert",
+      "duration": 3.76,
+      "offset": 519.36,
+      "lang": "en"
+    },
+    {
+      "text": "authenticated which you call this and",
+      "duration": 3.56,
+      "offset": 521.12,
+      "lang": "en"
+    },
+    {
+      "text": "you should expect the user back and if",
+      "duration": 3.64,
+      "offset": 523.12,
+      "lang": "en"
+    },
+    {
+      "text": "it doesn't it just throws an error so",
+      "duration": 3.56,
+      "offset": 524.68,
+      "lang": "en"
+    },
+    {
+      "text": "that's kind of like the overview getting",
+      "duration": 3.72,
+      "offset": 526.76,
+      "lang": "en"
+    },
+    {
+      "text": "off of Lucio was not hard at all I mean",
+      "duration": 3.599,
+      "offset": 528.24,
+      "lang": "en"
+    },
+    {
+      "text": "it does take some time reading through",
+      "duration": 3.44,
+      "offset": 530.48,
+      "lang": "en"
+    },
+    {
+      "text": "the docks um so it might be a little bit",
+      "duration": 3.481,
+      "offset": 531.839,
+      "lang": "en"
+    },
+    {
+      "text": "overwhelming but again just keep in mind",
+      "duration": 3.12,
+      "offset": 533.92,
+      "lang": "en"
+    },
+    {
+      "text": "that it's really just like copying these",
+      "duration": 4.12,
+      "offset": 535.32,
+      "lang": "en"
+    },
+    {
+      "text": "four functions also copying these Cod",
+      "duration": 3.28,
+      "offset": 537.04,
+      "lang": "en"
+    },
+    {
+      "text": "cookie",
+      "duration": 3.92,
+      "offset": 539.44,
+      "lang": "en"
+    },
+    {
+      "text": "examples and just using them that's it",
+      "duration": 4.16,
+      "offset": 540.32,
+      "lang": "en"
+    },
+    {
+      "text": "all right so hope you guys enjoyed",
+      "duration": 2.719,
+      "offset": 543.36,
+      "lang": "en"
+    },
+    {
+      "text": "watching again feel free to check out my",
+      "duration": 2.64,
+      "offset": 544.48,
+      "lang": "en"
+    },
+    {
+      "text": "starter kit if you want to read through",
+      "duration": 2.481,
+      "offset": 546.079,
+      "lang": "en"
+    },
+    {
+      "text": "that code base to understand how I got",
+      "duration": 4.159,
+      "offset": 547.12,
+      "lang": "en"
+    },
+    {
+      "text": "off of Lucy off but uh other than that I",
+      "duration": 3.959,
+      "offset": 548.56,
+      "lang": "en"
+    },
+    {
+      "text": "mean good luck have a good day happy",
+      "duration": 3.641,
+      "offset": 551.279,
+      "lang": "en"
+    },
+    {
+      "text": "quing",
+      "duration": 2.401,
+      "offset": 552.519,
+      "lang": "en"
+    }
+  ]
+}

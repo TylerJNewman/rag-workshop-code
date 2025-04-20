@@ -21,9 +21,6 @@ export const mastra = new Mastra({
     basicAgent,
     codeAgent,
   },
-  workflows: {
-    semanticChunkingWorkflow,
-  },
   storage: new PostgresStore({
     connectionString: connectionString
   }),

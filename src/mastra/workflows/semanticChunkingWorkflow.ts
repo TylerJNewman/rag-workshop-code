@@ -1,6 +1,8 @@
 // src/mastra/workflows/semanticChunkingWorkflow.ts
 import { Workflow, Step } from '@mastra/core/workflows';
-import { z } from 'zod';
+import { z } from 'zod'; 
+import winkNLP from 'wink-nlp'; // Import main library
+import model from 'wink-eng-lite-web-model'; // 
 import {
   fetchVideoDetails,
   formatTranscript,
@@ -9,7 +11,7 @@ import {
 import { fineChunkingTool } from '../agents/fine-chunking-agent';
 // Import the medium chunking tool and its output type
 import { mediumChunkingTool, MediumChunk } from '../agents/med-chunking-agent/tool';
-import { mapFineChunksToTimestamps, TimedChunk } from './utils/timestampMapping';
+import { mapFineChunksToTimestampsWink, TimedChunk } from './utils/timestampMappingWink';
 // Import the large chunking tool
 import { largeChunkingTool } from '../agents/large-chunking-agent/tool';
 // Import embedding utility and types
@@ -17,6 +19,10 @@ import { generateEmbeddings, InputChunk, OutputChunk } from './utils/embeddingUt
 
 // Import the new tagging tool
 import { taggingTool } from '../agents/tagging-agent/tool';
+import { mastra } from '..';
+import { withFileCache, withFileSyncCache } from './utils/fileCache';
+
+const nlp = winkNLP(model);
 
 // Define a more specific type for the metadata used in this workflow
 type ChunkMetadata = {
@@ -35,13 +41,23 @@ type ChunkMetadata = {
     summary?: string; // Added for medium chunks
 };
 
+// --- Schemas ---
+// Schema for TimedChunk (can also be imported if defined centrally)
+const timedChunkSchema = z.custom<TimedChunk>((val) => {
+    return typeof val === 'object' && val !== null &&
+        typeof (val as TimedChunk).text === 'string' &&
+        typeof (val as TimedChunk).startOffset === 'number' &&
+        typeof (val as TimedChunk).endOffset === 'number';
+}, { message: "Invalid TimedChunk structure" });
+const timedChunksArraySchema = z.array(timedChunkSchema);
+
 // Define Zod schemas for step outputs
 const videoDetailsSchema = z.custom<VideoDetails>();
 const formattedTranscriptSchema = z.string();
 
-// Schema for the fineChunkingStep output (array of timed fine chunks)
-const timedChunkSchema = z.custom<TimedChunk>(); 
-const timedChunksArraySchema = z.array(timedChunkSchema); 
+// // Schema for the fineChunkingStep output (array of timed fine chunks)
+// const timedChunkSchema = z.custom<TimedChunk>(); 
+// const timedChunksArraySchema = z.array(timedChunkSchema); 
 
 // Schema for the mediumChunkingTool/Step output
 const mediumChunkSchema = z.custom<MediumChunk>();
@@ -72,7 +88,11 @@ export const fetchTranscriptStep = new Step({
   outputSchema: videoDetailsSchema,
   execute: async ({ context }) => {
     const videoId: string = context.triggerData.videoId;
-    return fetchVideoDetails(videoId);
+    return withFileCache(
+        `video-details-${videoId}`,          // Cache key derived from videoId
+        () => fetchVideoDetails(videoId),   // Function to fetch data if cache misses
+        { subDir: 'video-details' }          // Cache subdirectory option
+    );
   },
 });
 
@@ -85,7 +105,12 @@ export const formatTranscriptStep = new Step({
     if (!videoDetails?.transcript) {
         throw new Error('Transcript data is missing from fetchTranscriptStep result.');
     }
-    return formatTranscript(videoDetails.transcript);
+    // return formatTranscript(videoDetails.transcript);
+    return withFileSyncCache(
+        `transcript-${videoDetails.videoId}`,          // Cache key derived from videoId
+        () => formatTranscript(videoDetails.transcript),   // Function to fetch data if cache misses
+        { subDir: 'transcripts' }          // Cache subdirectory option
+    );
   },
 });
 
@@ -103,49 +128,47 @@ export const fineChunkingStep = new Step({
     if (!fineChunkingTool.execute) {
         throw new Error('Fine chunking tool execute method is undefined');
     }
-    const fineTextChunks = await fineChunkingTool.execute({ context: toolInput });
+    return withFileCache(
+        `fine-chunks-${formattedTranscript}`,          // Cache key derived from formatted transcript
+        // biome-ignore lint/style/noNonNullAssertion: <explanation>
+        () => fineChunkingTool.execute!({ context: toolInput }),   // Function to fetch data if cache misses (using non-null assertion as it's checked above)
+        { subDir: 'fine-chunks' }          // Cache subdirectory option
+    );
 
-    if (!Array.isArray(fineTextChunks) || fineTextChunks.some(c => typeof c !== 'string')) {
-        console.error('Invalid output format received from fineChunkingTool:', fineTextChunks);
-        throw new Error('Invalid output format received from fineChunkingTool. Expected string[].');
-    }
-
-    return fineTextChunks;
   },
 });
 
 // Step 4: Map Chunks to Timestamps
 export const timestampMappingStep = new Step({
-  id: 'timestampMapping',
-  outputSchema: timedChunksArraySchema,
-  execute: async ({ context }) => {
-    const fineTextChunks = context.getStepResult<string[]>('fineChunking');
-    if (!fineTextChunks) {
-      throw new Error('Fine text chunks are missing from fineChunkingStep result.');
-    }
+    id: 'timestampMapping',
+    outputSchema: timedChunksArraySchema, // Output schema remains the same
+    execute: async ({ context }) => {
+        // 1. Get Inputs from Context
+        const fineTextChunks = context.getStepResult<string[]>('fineChunking');
+        const videoDetails = context.getStepResult<VideoDetails>('fetchTranscript');
 
-    const formattedTranscript = context.getStepResult<string>('formatTranscript');
-    if (!formattedTranscript) {
-      throw new Error('Formatted transcript is missing from formatTranscriptStep result.');
-    }
+        // 2. Call the Mapping Function
+        // Pass the globally initialized nlp instance
+        // const timedChunks = mapFineChunksToTimestampsWink(
+        //     videoDetails.transcript,
+        //     fineTextChunks,
+        //     nlp, // Pass the initialized instance
+        //     {
+        //         // Optional: Override defaults here if needed
+        //         // wordsToMatch: 60,
+        //         // similarityThreshold: 0.005
+        //     }
+        // );
 
-    const videoDetails = context.getStepResult<VideoDetails>('fetchTranscript');
-    if (!videoDetails?.transcript) {
-      throw new Error('Original transcript segments are missing from fetchTranscriptStep result.');
-    }
-    const originalSegments = videoDetails.transcript;
-
-    const timedChunks = mapFineChunksToTimestamps(
-        originalSegments, 
-        fineTextChunks, 
-        formattedTranscript
-    );
-
-    // Strategic Log 1: Log the output before returning
-    console.log(`[timestampMappingStep] Returning ${timedChunks.length} timed chunks:`, JSON.stringify(timedChunks.slice(0, 2), null, 2)); // Log first few for brevity
-
-    return timedChunks;
-  },
+        // // 3. Return the result
+        // return timedChunks;
+        return withFileSyncCache(
+            `timed-chunks-${videoDetails.videoId}`,          // Cache key derived from videoId
+            // Use withFileSyncCache because mapFineChunksToTimestampsWink is synchronous
+            () => mapFineChunksToTimestampsWink(videoDetails.transcript, fineTextChunks, nlp),   // Synchronous function to fetch data if cache misses
+            { subDir: 'timed-chunks' }          // Cache subdirectory option
+        );
+    },
 });
 
 // Step 5: Perform Medium Chunking (Re-introducing Step wrapper)
@@ -153,34 +176,32 @@ export const mediumChunkingStep = new Step({
     id: 'mediumChunking', // Use a Step ID again
     outputSchema: mediumChunksArraySchema, // Tool's output schema is the Step's output schema
     execute: async ({ context }) => {
-        console.log('--- Executing mediumChunkingStep ---'); 
-        // Corrected: Get result from 'timestampMapping' step
         const timedFineChunks = context.getStepResult<TimedChunk[]>('timestampMapping'); 
-        
-        // Strategic Log 2: Log the received data structure and content
-        console.log(`[mediumChunkingStep] Received data from getStepResult('timestampMapping'):`, JSON.stringify(timedFineChunks?.slice(0, 2), null, 2)); // Log first few
-        console.log(`Received ${timedFineChunks?.length ?? 0} timed fine chunks for processing.`);
 
-        if (!timedFineChunks || timedFineChunks.length === 0) {
-            console.warn('No timed fine chunks received from timestampMappingStep. Skipping medium chunking.');
-            return [];
-        }
-
-        // Prepare input for the tool, matching the tool's inputSchema
         const toolInput = { fineChunks: timedFineChunks }; 
 
         if (!mediumChunkingTool.execute) {
             throw new Error('Medium chunking tool execute method is undefined');
         }
         
-        // Call the tool's execute method, passing the context object expected by the tool
-        console.log("Calling mediumChunkingTool.execute with context:", { context: toolInput });
-        const mediumChunks = await mediumChunkingTool.execute({ context: toolInput });
+        // Retrieve video details to get the videoId for the cache key
+        const videoDetails = context.getStepResult<VideoDetails>('fetchTranscript');
+        if (!videoDetails?.videoId) {
+            console.error("Could not retrieve videoId from fetchTranscript step result. Cannot generate cache key.");
+            // Decide how to handle: throw error, return empty, or proceed without cache?
+            // For now, let's throw an error as the cache key is essential here.
+            throw new Error("Missing videoId for medium chunking cache key.");
+        }
 
-        // Return the result from the tool, which matches the Step's outputSchema
-        console.log(`mediumChunkingStep returning ${mediumChunks?.length ?? 0} medium chunks.`); // Log return
-        console.log("mediumChunkingStep object defined:", !!mediumChunkingStep); // <-- Log medium step object creation
-        return mediumChunks;
+        // Use withFileCache for caching the async operation
+        return withFileCache(
+            `medium-chunks-${videoDetails.videoId}`, // Cache key derived from videoId
+            // The fetcher function calls the tool's execute method
+            // No non-null assertion needed due to the check above
+            // biome-ignore lint/style/noNonNullAssertion: <explanation>
+            () => mediumChunkingTool.execute!({ context: toolInput }),
+            { subDir: 'medium-chunks' } // Cache subdirectory option
+        );
     },
 });
 
@@ -447,6 +468,7 @@ export const semanticChunkingWorkflow = new Workflow({
   triggerSchema: z.object({
     videoId: z.string().min(1, "Video ID cannot be empty"),
   }),
+  mastra: mastra
 });
 
 semanticChunkingWorkflow
@@ -455,7 +477,7 @@ semanticChunkingWorkflow
   .then(fineChunkingStep)
   .then(timestampMappingStep)
   .then(mediumChunkingStep)
-  .then(largeChunkingStep)
-  .then(embeddingStep)
-  .then(indexingStep)
+//   .then(largeChunkingStep)
+//   .then(embeddingStep)
+//   .then(indexingStep)
   .commit();

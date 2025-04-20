@@ -1,10 +1,8 @@
 import { z } from 'zod';
 // Import createTool from specific path, Agent from core
-import { Agent } from '@mastra/core';
 import { createTool } from '@mastra/core/tools';
 import { TimedChunk } from '../../workflows/utils/timestampMapping'; // Input type from Phase 2
 import { medChunkingAgent } from './index';
-import Fuse from 'fuse.js'; // Import Fuse for potential mapping
 
 // Keep input schema as an object containing the fine chunks array
 const inputSchema = z.object({ 

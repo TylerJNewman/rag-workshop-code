@@ -1,4 +1,4 @@
-import { Agent } from '@mastra/core';
+import { Agent } from '@mastra/core/agent';
 import { taggingAgentInstructions } from './instructions/instructions';
 import { google } from '@ai-sdk/google'; // Import the provider
 import { env } from '../../../config'; // Assuming GEMINI_MODEL is defined here
