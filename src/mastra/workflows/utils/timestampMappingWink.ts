@@ -39,7 +39,7 @@ export function mapFineChunksToTimestampsWink(
 ): TimedChunk[] {
 
   const {
-    wordsToMatch = 50,
+    wordsToMatch = 15,
     cosineSimilarityThreshold = 0.1 // LOWERED Cosine threshold (0-1)
   } = config || {};
 
@@ -252,23 +252,33 @@ const  learnedTermsResult = bm25.out('terms' as any);
 
        // --- Timestamp Assignment ---
        if (bestMatchOriginalIndex !== -1 && bestScore >= cosineSimilarityThreshold) {
-         const matchedSegment = originalSegments[bestMatchOriginalIndex];
-         const startOffset = matchedSegment.offset; // Assume offset is in seconds
-         const endOffset = matchedSegment.offset + matchedSegment.duration; // Assume duration is in seconds
+         // Determine the index of the segment to use for timestamping
+         const segmentIndexToUse = bestMatchOriginalIndex > 0 ? bestMatchOriginalIndex - 1 : bestMatchOriginalIndex; // Use preceding segment if available, otherwise use the best match
 
-         // Basic sanity check for timestamps
+         const segmentForTimestamp = originalSegments[segmentIndexToUse];
+
+         // Check if the chosen segment and its timestamps are valid
+         if (!segmentForTimestamp) {
+             console.warn(`[mapFineChunksWink] Could not find segment at index ${segmentIndexToUse} (derived from best match ${bestMatchOriginalIndex}) for timestamping chunk ${i}. Skipping.`);
+             continue;
+         }
+
+         const startOffset = segmentForTimestamp.offset; // Assume offset is in seconds
+         const endOffset = segmentForTimestamp.offset + segmentForTimestamp.duration; // Assume duration is in seconds
+
+         // Basic sanity check for timestamps from the *chosen* segment
          if (typeof startOffset !== 'number' || Number.isNaN(startOffset) || typeof endOffset !== 'number' || Number.isNaN(endOffset) || endOffset < startOffset) {
-              console.warn(`[mapFineChunksWink] Invalid timestamps found for matched segment index ${bestMatchOriginalIndex}. Score: ${bestScore.toFixed(4)}. Start: ${startOffset}, End: ${endOffset}. Skipping chunk ${i}.`);
+              console.warn(`[mapFineChunksWink] Invalid timestamps found for segment index ${segmentIndexToUse} used for chunk ${i}. Score: ${bestScore.toFixed(4)}. Start: ${startOffset}, End: ${endOffset}. Skipping chunk ${i}.`);
               continue;
           }
 
          timedChunks.push({
-           text: originalChunkText,
+           text: originalChunkText, // Keep the original chunk's text
            startOffset: parseFloat(startOffset.toFixed(3)),
            endOffset: parseFloat(endOffset.toFixed(3)),
          });
-         // Optional: Log success
-         // console.log(`[mapFineChunksWink] Chunk ${i} matched original segment ${bestMatchOriginalIndex} (Cosine Score: ${bestScore.toFixed(4)}) -> [${startOffset.toFixed(3)} - ${endOffset.toFixed(3)}]`);
+         // Optional: Log success, indicating which segment's time was used
+         // console.log(`[mapFineChunksWink] Chunk ${i} matched best with segment ${bestMatchOriginalIndex} (Score: ${bestScore.toFixed(4)}), used segment ${segmentIndexToUse} for timestamp -> [${startOffset.toFixed(3)} - ${endOffset.toFixed(3)}]`);
 
        } else {
          const reason = bestMatchOriginalIndex === -1 ? 'No suitable match found via vector comparison.'
