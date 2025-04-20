@@ -367,9 +367,10 @@ async function fetchVideoDetails(
   }
 }
 
+
 export function formatTranscript(transcriptData: TranscriptResponse[]): string {
   if (!transcriptData || !Array.isArray(transcriptData) || transcriptData.length === 0) {
-    return ""; // Return empty string for invalid input
+    throw new Error("Transcript data is missing in formatTranscript");
   }
 
   let formattedTranscript = "";
