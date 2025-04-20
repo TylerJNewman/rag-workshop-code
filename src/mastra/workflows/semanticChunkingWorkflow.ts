@@ -476,7 +476,7 @@ semanticChunkingWorkflow
   .then(formatTranscriptStep)
   .then(fineChunkingStep)
   .then(timestampMappingStep)
-  .then(mediumChunkingStep)
+//   .then(mediumChunkingStep)
 //   .then(largeChunkingStep)
 //   .then(embeddingStep)
 //   .then(indexingStep)

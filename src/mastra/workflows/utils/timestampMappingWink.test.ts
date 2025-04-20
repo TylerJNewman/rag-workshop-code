@@ -13,9 +13,9 @@ describe('mapFineChunksToTimestampsWink', () => {
   it('should map a simple chunk to its corresponding segment timestamp', () => {
     // --- Test Data ---
     const originalSegments: TranscriptResponse[] = [
-      { text: 'This is the first sentence.', offset: 0, duration: 3, lang: 'en' },
-      { text: 'And here comes the second one.', offset: 3.5, duration: 4, lang: 'en' },
-      { text: 'Finally, the third segment arrives.', offset: 8, duration: 5, lang: 'en' },
+      { text: 'This is the first sentence.', offset: 0, duration: 3000, lang: 'en' },
+      { text: 'And here comes the second one.', offset: 3500, duration: 4000, lang: 'en' },
+      { text: 'Finally, the third segment arrives.', offset: 8000, duration: 5000, lang: 'en' },
     ];
 
     const fineTextChunks: string[] = [
@@ -44,15 +44,15 @@ describe('mapFineChunksToTimestampsWink', () => {
     // Check the first mapped chunk (exact match)
     expect(timedChunks[0]).toEqual({
       text: 'This is the first sentence.',
-      startOffset: 0, // s
-      endOffset: 3 // s (0 + 3)
+      startOffset: 0, // ms
+      endOffset: 3000 // ms (0 + 3000)
     });
 
     // Check the second mapped chunk (partial match)
     expect(timedChunks[1]).toEqual({
       text: 'the second one.',
-      startOffset: 3.5, // s
-      endOffset: 7.5  // s (3.5 + 4)
+      startOffset: 3500, // ms
+      endOffset: 7500  // ms (3500 + 4000)
     });
   });
 
@@ -63,7 +63,7 @@ describe('mapFineChunksToTimestampsWink', () => {
 
   it('should return empty array if no chunks provided', () => {
      const originalSegments: TranscriptResponse[] = [
-      { text: 'Segment 1', offset: 0, duration: 1, lang: 'en' },
+      { text: 'Segment 1', offset: 0, duration: 1000, lang: 'en' },
     ];
     const timedChunks = mapFineChunksToTimestampsWink(originalSegments, [], nlp);
     expect(timedChunks).toEqual([]);
